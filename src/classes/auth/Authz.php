@@ -1,15 +1,15 @@
 <?php
 
-namespace iutnc\deefy\auth;
+namespace iutnc\netvod\auth;
 
 use iutnc\netvod\exception\AuthException;
-use iutnc\netvod\repository\DeefyRepository;
+use iutnc\netvod\repository\NetvodRepository;
 
 class Authz{
 
     public static function checkRole(int $n) : bool {
 
-        $pdo = DeefyRepository::getInstance();
+        $pdo = NetvodRepository::getInstance();
         $user = unserialize($_SESSION['user']);
         if (!$user){
             throw new AuthException("Erreur : Aucun user connecté");
@@ -21,7 +21,7 @@ class Authz{
     public static function checkPlaylistCurrOwner(int $idPlaylist) : bool{
         if (Authz::checkRole(100))
             return true;
-        $pdo = DeefyRepository::getInstance();
+        $pdo = NetvodRepository::getInstance();
         return $pdo->checkPlaylistOwner(unserialize($_SESSION['user']), $idPlaylist);
     }
 }

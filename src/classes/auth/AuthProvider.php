@@ -1,14 +1,14 @@
 <?php
 
-namespace iutnc\deefy\auth;
+namespace iutnc\netvod\auth;
 
 use iutnc\netvod\exception\AuthException;
-use iutnc\netvod\repository\DeefyRepository;
+use iutnc\netvod\repository\NetvodRepository;
 
 class AuthnProvider
 {
     public static function signin(string $email, string $passwd2check): void {
-        $bdd = DeefyRepository::getInstance();
+        $bdd = NetvodRepository::getInstance();
         $tab = $bdd->getUserInfo($email);
         if (!$tab)
             throw new AuthException("Auth error : invalid credentials");
@@ -23,7 +23,7 @@ class AuthnProvider
             throw new AuthException("error : Email incorrect");
         if (strlen($pass) < 10)
             throw new AuthException("Erreur : Mot de passe trop court");
-        $bdd = DeefyRepository::getInstance();
+        $bdd = NetvodRepository::getInstance();
         if ($bdd->verifieEmailExiste($email)){
             throw new AuthException("Erreur : Email déja enregistré");
         }
