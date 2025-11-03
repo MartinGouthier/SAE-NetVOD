@@ -3,6 +3,7 @@
 namespace iutnc\netvod\dispatch;
 
 use iutnc\netvod\auth\AuthnProvider;
+use iutnc\netvod\action\DefaultAction;
 
 class Dispatcher {
     private string $action;
@@ -53,10 +54,9 @@ class Dispatcher {
                     <h2>Menu principal</h2>
                     <ul>
                         <li><a href="?action=default">Accueil</a></li>
-                        <li><a href="?action=add-playlist">Créer une playlist vide</a></li>
-                        <li><a href="?action=add-track">Ajouter une piste</a></li>
-                        <li><a href="?action=playlists">Mes playlists</a></li>
-                        <li><a href="?action=display-playlist">Afficher la playlist courante</a></li>
+                        <li><a href="?action=catalogue">Catalogue</a></li>
+                        <li><a href="?action=preference">Mes préférences</a></li>
+                        <li><a href="?action=viewed">Mes visionages</a></li>
                     </ul>
             
                     <hr>
