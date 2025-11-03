@@ -5,7 +5,32 @@ SET time_zone = '+00:00';
 SET foreign_key_checks = 0;
 SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 
+DROP TABLE IF EXISTS `notation`;
+DROP TABLE IF EXISTS `episodeVisionne`;
+DROP TABLE IF EXISTS `serieEnCours`;
+DROP TABLE IF EXISTS `seriePreferees`;
+DROP TABLE IF EXISTS `user`;
 DROP TABLE IF EXISTS `episode`;
+DROP TABLE IF EXISTS `serie`;
+
+CREATE TABLE `serie` (
+                    `id` int(11) NOT NULL AUTO_INCREMENT,
+                    `titre` varchar(128) NOT NULL,
+                    `descriptif` text NOT NULL,
+                    `img` varchar(256) NOT NULL,
+                    `annee` int(11) NOT NULL,
+                    `date_ajout` date NOT NULL,
+                    PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `serie` (`id`, `titre`, `descriptif`, `img`, `annee`, `date_ajout`) VALUES
+(1,	'Le lac aux mystères',	'C\'est l\'histoire d\'un lac mystérieux et plein de surprises. La série, bluffante et haletante, nous entraine dans un labyrinthe d\'intrigues époustouflantes. A ne rater sous aucun prétexte !',	'',	2020,	'2022-10-30'),
+(2,	'L\'eau a coulé',	'Une série nostalgique qui nous invite à revisiter notre passé et à se remémorer tout ce qui s\'est passé depuis que tant d\'eau a coulé sous les ponts.',	'',	1907,	'2022-10-29'),
+(3,	'Chevaux fous',	'Une série sur la vie des chevals sauvages en liberté. Décoiffante.',	'',	2017,	'2022-10-31'),
+(4,	'A la plage',	'Le succès de l\'été 2021, à regarder sans modération et entre amis.',	'',	2021,	'2022-11-04'),
+                                                                                    (5,	'Champion',	'La vie trépidante de deux champions de surf, passionnés dès leur plus jeune age. Ils consacrent leur vie à ce sport. ',	'',	2022,	'2022-11-03'),
+                                                                                    (6,	'Une ville la nuit',	'C\'est beau une ville la nuit, avec toutes ces voitures qui passent et qui repassent. La série suit un livreur, un chauffeur de taxi, et un insomniaque. Tous parcourent la grande ville une fois la nuit venue, au volant de leur véhicule.',	'',	2017,	'2022-10-31');
+
 CREATE TABLE `episode` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `numero` int(11) NOT NULL DEFAULT 1,
@@ -14,7 +39,9 @@ CREATE TABLE `episode` (
   `duree` int(11) NOT NULL DEFAULT 0,
   `file` varchar(256) DEFAULT NULL,
   `serie_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  CONSTRAINT `FKserie` FOREIGN KEY (`serie_id`) REFERENCES `serie` (`id`)
+
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO `episode` (`id`, `numero`, `titre`, `resume`, `duree`, `file`, `serie_id`) VALUES
@@ -40,55 +67,40 @@ INSERT INTO `episode` (`id`, `numero`, `titre`, `resume`, `duree`, `file`, `seri
 (20,	1,	'Ça roule, ça roule',	'Ça roule, ça roule toute la nuit. Jack fonce dans sa camionnette pour rejoindre le spot de surf.',	27,	'cars-by-night.mp4',	6),
 (21,	2,	'Ça roule, ça roule toujours',	'Ça roule la nuit, comme chaque nuit. Jim fonce avec son taxi, pour rejoindre Jack à la plage. De l\'eau a coulé sous les ponts. Le mystère du Lac trouve sa solution alors que les chevaux sont de retour après une virée sur l\'Etoile Noire.',	27,	'cars-by-night.mp4',	6);
 
-DROP TABLE IF EXISTS `serie`;
-CREATE TABLE `serie` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `titre` varchar(128) NOT NULL,
-  `descriptif` text NOT NULL,
-  `img` varchar(256) NOT NULL,
-  `annee` int(11) NOT NULL,
-  `date_ajout` date NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `serie` (`id`, `titre`, `descriptif`, `img`, `annee`, `date_ajout`) VALUES
-(1,	'Le lac aux mystères',	'C\'est l\'histoire d\'un lac mystérieux et plein de surprises. La série, bluffante et haletante, nous entraine dans un labyrinthe d\'intrigues époustouflantes. A ne rater sous aucun prétexte !',	'',	2020,	'2022-10-30'),
-(2,	'L\'eau a coulé',	'Une série nostalgique qui nous invite à revisiter notre passé et à se remémorer tout ce qui s\'est passé depuis que tant d\'eau a coulé sous les ponts.',	'',	1907,	'2022-10-29'),
-(3,	'Chevaux fous',	'Une série sur la vie des chevals sauvages en liberté. Décoiffante.',	'',	2017,	'2022-10-31'),
-(4,	'A la plage',	'Le succès de l\'été 2021, à regarder sans modération et entre amis.',	'',	2021,	'2022-11-04'),
-(5,	'Champion',	'La vie trépidante de deux champions de surf, passionnés dès leur plus jeune age. Ils consacrent leur vie à ce sport. ',	'',	2022,	'2022-11-03'),
-(6,	'Une ville la nuit',	'C\'est beau une ville la nuit, avec toutes ces voitures qui passent et qui repassent. La série suit un livreur, un chauffeur de taxi, et un insomniaque. Tous parcourent la grande ville une fois la nuit venue, au volant de leur véhicule.',	'',	2017,	'2022-10-31');
-
--- 2022-10-31 16:33:40
-
-DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `email` varchar(256) NOT NULL,
   `passwd` varchar(256) NOT NULL,
-  `role` int(11) NOT NULL DEFAULT 1,
+  `role` int(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `seriePreferees`;
 CREATE TABLE `seriePreferees`(
     `id_serie` int(11) NOT NULL,
     `id_user` int(11) NOT NULL,
     PRIMARY KEY (`id_serie`,`id_user`),
     CONSTRAINT `FKseriePrefSerie` FOREIGN KEY (`id_serie`) REFERENCES `serie` (`id`),
     CONSTRAINT `FKseriePrefUser` FOREIGN KEY (`id_user`) REFERENCES `user` (`id`)
-    );
+    )ENGINE=InnoDB DEFAULT CHARSET=utf8;
     
-DROP TABLE IF EXISTS `serieEnCours`;
 CREATE TABLE `serieEnCours`(
 `id_serie` int(11) NOT NULL,
 `id_user` int(11) NOT NULL,
+`etatVisionnage` int(1) NOT NULL,
 PRIMARY KEY (`id_serie`,`id_user`),
 CONSTRAINT `FKserieEnCoursSerie` FOREIGN KEY (`id_serie`) REFERENCES `serie` (`id`),
 CONSTRAINT `FKserieEnCoursUser` FOREIGN KEY (`id_user`) REFERENCES `user` (`id`)
-);
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `notation`;
+CREATE TABLE `episodeVisionne`(
+    `id_episode` int(11) NOT NULL,
+    `id_user` int(11) NOT NULL,
+    PRIMARY KEY (`id_episode`,`id_user`)
+    CONSTRAINT `FKepisodeVisionneEpisode` FOREIGN KEY (ìd_episode) REFERENCES `episode` (`id`),
+    CONSTRAINT `FKepisodeVisionneUser` FOREIGN KEY (ìd_user) REFERENCES `user` (`id`),
+    )ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 CREATE TABLE `notation`(
     `id_serie` int(11) NOT NULL,
     `id_user` int(11) NOT NULL,
@@ -97,4 +109,4 @@ CREATE TABLE `notation`(
     PRIMARY KEY (`id_serie`,`id_user`),
 	CONSTRAINT `FKnotationSerie` FOREIGN KEY (`id_serie`) REFERENCES `serie` (`id`),
 	CONSTRAINT `FKnotationUser` FOREIGN KEY (`id_user`) REFERENCES `user` (`id`)
-    );
+    )ENGINE=InnoDB DEFAULT CHARSET=utf8;
