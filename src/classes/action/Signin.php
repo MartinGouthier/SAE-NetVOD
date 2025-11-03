@@ -67,11 +67,8 @@ class Signin extends Action {
             <br><br>
 
             <button type="submit">Connexion</button>
-        
-             <a href="?action=add-user">Crée un compte</a>
-       
         </form>
-
+        <a href="?action=add-user">Créer un compte</a>
         <script>
         document.getElementById("togglePassword").addEventListener("click", function() {
             const passwordField = document.getElementById("password");
