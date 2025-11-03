@@ -1,0 +1,20 @@
+<?php
+namespace iutnc\netvod\video;
+class EpisodeSerie {
+    private int $numero;
+    private string $titre;
+    private string $resume;
+    private int $duree;
+    private int $cheminFichier;
+    public function __construct(int $numero, string $titre, string $resume, int $duree, int $cheminFichier) {
+        $this->numero = $numero;
+        $this->titre = $titre;
+        $this->resume = $resume;
+        $this->duree = $duree;
+        $this->cheminFichier = $cheminFichier;
+    }
+
+    public function __get($name) {
+        return $this->$name;
+    }
+}
