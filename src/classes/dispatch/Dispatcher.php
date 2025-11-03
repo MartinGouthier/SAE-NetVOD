@@ -1,6 +1,6 @@
 <?php
 
-namespace iutnc\deefy\dispatch;
+namespace iutnc\netvod\dispatch;
 
 use iutnc\netvod\auth\AuthnProvider;
 

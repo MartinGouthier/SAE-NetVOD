@@ -1,4 +1,7 @@
 <?php
+
+namespace iutnc\netvod\repository;
+
 class NetvodRepository
 {
     private \PDO $pdo;
