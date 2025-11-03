@@ -8,7 +8,7 @@ namespace iutnc\netvod\action;
 class AddUser extends Action {
 
     // Si la requête HTTP est de type POST 
-    public function post(): string {
+    public function POST(): string {
 
         // Récupération et filtrage des valeurs
         $email = filter_var($_POST['email'] ?? '', FILTER_SANITIZE_EMAIL);
@@ -24,12 +24,12 @@ class AddUser extends Action {
         if (strcmp($password, $repassword) !== 0) {
              return "<p>Veuillez saisir le même mot de passe</p>";
         }
-        
+
         return "<p> Inscription réussie ! Vous pouvez maintenant vous connecter</p>";
     }
 
     // Si la requête est de type GET     
-    public function get(): string{
+    public function GET(): string{
         return <<<HTML
         <h2>Inscription utilisateur</h2>
         <form method="post" action="?action=add-user">

@@ -5,6 +5,8 @@ namespace iutnc\netvod\dispatch;
 use iutnc\netvod\auth\AuthnProvider;
 use iutnc\netvod\action\DefaultAction;
 use iutnc\netvod\action\AddUser;
+use iutnc\netvod\action\Signin;
+
 
 class Dispatcher {
     private string $action;
@@ -18,7 +20,10 @@ class Dispatcher {
     public function run(): void {
         switch ($this->action) {
             case 'add-user':
-                $a = new addUser();
+                $a = new AddUser();
+                break;
+             case 'sign-in':
+                $a = new Signin();
                 break;
             
             default:
