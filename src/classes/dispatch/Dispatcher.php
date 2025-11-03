@@ -4,6 +4,7 @@ namespace iutnc\netvod\dispatch;
 
 use iutnc\netvod\auth\AuthnProvider;
 use iutnc\netvod\action\DefaultAction;
+use iutnc\netvod\action\CatalogueAction;
 
 class Dispatcher {
     private string $action;
@@ -18,6 +19,9 @@ class Dispatcher {
         switch ($this->action) {
             default:
                 $a = new DefaultAction();
+                break;
+            case 'catalogue':
+                $a = new CatalogueAction();
                 break;
         }
         $html = $a->execute();
