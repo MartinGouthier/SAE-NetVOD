@@ -201,7 +201,6 @@ class NetvodRepository
             $statm = $this->pdo->prepare($requete);
             $statm->execute([$id_serie, $id_user, $etat]);
         } else {
-            // Mise à jour de l’état (par ex. si la série est terminée)
             $requete = "UPDATE serieEnCours SET etatVisionnage = ? WHERE id_serie = ? AND id_user = ?;";
             $statm = $this->pdo->prepare($requete);
             $statm->execute([$etat, $id_serie, $id_user]);
@@ -215,7 +214,7 @@ class NetvodRepository
         $tab = [];
         while ($donnee = $statm->fetch()) {
             $serie = $this->getSerieById($donnee['id_serie']);
-            $serie->etatVisionnage = $donnee['etatVisionnage']; // pratique pour affichage
+            $serie->etatVisionnage = $donnee['etatVisionnage'];
             $tab[] = $serie;
         }
         return $tab;
