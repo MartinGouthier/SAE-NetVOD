@@ -2,6 +2,9 @@
 
 namespace iutnc\netvod\repository;
 
+use iutnc\netvod\video\EpisodeSerie;
+use iutnc\netvod\video\Serie;
+
 class NetvodRepository
 {
     private \PDO $pdo;
@@ -56,5 +59,17 @@ class NetvodRepository
         $statm->execute();
         $nbr = $statm->fetch()[0];
         return ((int)$nbr !== 0);
+    }
+
+    public function getSeries() : array {
+        $requete = "SELECT id FROM serie;";
+        $tab = [];
+        $statm = $this->pdo->query($requete);
+        $statm->execute();
+        while ($donnee = $statm->fetch()){
+            $serie = $this->getSerieById($donnee[0]);
+            $tab[] = $serie;
+        }
+        return $tab;
     }
 }
