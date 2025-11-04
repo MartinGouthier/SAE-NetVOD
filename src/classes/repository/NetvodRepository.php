@@ -115,12 +115,10 @@ class NetvodRepository
     }
 
     public function addSerieEnCours(int $id_serie, int $id_user, int $etat = 0): void {
-        // On vérifie si elle existe déjà
         $requete = "SELECT COUNT(*) FROM serieEnCours WHERE id_serie = ? AND id_user = ?;";
         $statm = $this->pdo->prepare($requete);
         $statm->execute([$id_serie, $id_user]);
         $existe = (int) $statm->fetch()[0];
-
         if ($existe === 0) {
             $requete = "INSERT INTO serieEnCours (id_serie, id_user, etatVisionnage) VALUES (?, ?, ?);";
             $statm = $this->pdo->prepare($requete);
@@ -137,7 +135,6 @@ class NetvodRepository
         $requete = "SELECT id_serie, etatVisionnage FROM serieEnCours WHERE id_user = ?;";
         $statm = $this->pdo->prepare($requete);
         $statm->execute([$id_user]);
-
         $tab = [];
         while ($donnee = $statm->fetch()) {
             $serie = $this->getSerieById($donnee['id_serie']);
