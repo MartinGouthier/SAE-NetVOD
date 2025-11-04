@@ -26,7 +26,7 @@ class NetvodRepository
         return self::$instance;
     }
 
-    public static function setConfig(string $file): void
+    public static function setConfig(string $file)
     {
         $conf = parse_ini_file($file);
         if ($conf === false) {
@@ -79,7 +79,7 @@ class NetvodRepository
         }
         return $tab;
     }
-    
+
     public function getSerieById(int $idSerie) : Serie {
         $requete = "SELECT * FROM serie WHERE id = ?;";
         $statm = $this->pdo->prepare($requete);
@@ -153,6 +153,23 @@ class NetvodRepository
         while ($donnee = $statm->fetch()){
             $serie = $this->getSerieById($donnee[0]);
             $tab[] = $serie;
+        }
+        return $tab;
+    }
+
+    public function addSeriePref(int $id_serie,int $id_user) : void{
+        $requete = "INSERT INTO seriepreferees VALUES (?,?);";
+        $statm = $this->pdo->prepare($requete);
+        $statm->execute([$id_serie,$id_user]);
+    }
+
+    public function getSeriesPref(int $id_user) : array{
+        $requete = "SELECT id_serie FROM seriepreferees WHERE id_user = ?;";
+        $statm = $this->pdo->prepare($requete);
+        $statm->execute([$id_user]);
+        $tab = [];
+        while ($donnee = $statm->fetch()){
+            $tab[] = $this->getSerieById($donnee[0]);
         }
         return $tab;
     }
