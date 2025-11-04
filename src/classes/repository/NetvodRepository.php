@@ -73,13 +73,13 @@ class NetvodRepository
         $statm = $this->pdo->prepare($requete);
         $statm->execute([$idSerie]);
         $donnee = $statm->fetch();
-        $serie = new Serie($donnee[1],$donnee[2],$donnee[3],$donnee[4],$donnee[6],$donnee[7]);
+        $serie = new Serie($donnee[1],$donnee[2],$donnee[3],$donnee[4],$donnee[6],$donnee[7],$donnee[0]);
 
         $requete = "SELECT * FROM episode WHERE id_serie = ?;";
         $statm2 = $this->pdo->prepare($requete);
         $statm2->execute([$idSerie]);
         while ($donneeEpisodes = $statm2->fetch()){
-            $episode = new EpisodeSerie($donneeEpisodes[1],$donneeEpisodes[2],$donneeEpisodes[3],$donneeEpisodes[4],$donneeEpisodes[5]);
+            $episode = new EpisodeSerie($donneeEpisodes[1],$donneeEpisodes[2],$donneeEpisodes[3],$donneeEpisodes[4],$donneeEpisodes[5],$donneeEpisodes[0]);
             $serie->ajouterEpisode($episode);
         }
         return $serie;
