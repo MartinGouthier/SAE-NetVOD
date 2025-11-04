@@ -14,7 +14,10 @@ class EpisodeSerie {
         $this->cheminFichier = $cheminFichier;
     }
 
-    public function __get($name) {
-        return $this->$name;
+    public function __get(string $at):mixed {
+        if (property_exists ($this, $at)) {
+            return $this->$at;
+        }
+        throw new Exception ("$at: invalid property");
     }
 }
