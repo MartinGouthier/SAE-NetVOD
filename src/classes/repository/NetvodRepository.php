@@ -45,10 +45,17 @@ class NetvodRepository
         return $statm->fetch();
     }
     public function registerNewUser(string $email,string $passwd) : void {
-        $requete = "INSERT INTO user (email, passwd, role) values (?, ?, 1);";
+        $requete = "INSERT INTO user (email, passwd, role) values (?, ?, 0);";
         $statm = $this->pdo->prepare($requete);
         $statm->bindParam(1,$email);
         $statm->bindParam(2,$passwd);
+        $statm->execute();
+    }
+
+    public function activationCompte(string $email): void {
+        $requete = "UPDATE user SET role = 1 WHERE email = ?";
+        $statm = $this->pdo->prepare($requete);
+        $statm->bindParam(1,$email);
         $statm->execute();
     }
 
@@ -71,5 +78,22 @@ class NetvodRepository
             $tab[] = $serie;
         }
         return $tab;
+    }
+    
+    public function getSerieById(int $idSerie) : Serie {
+        $requete = "SELECT * FROM serie WHERE id = ?;";
+        $statm = $this->pdo->prepare($requete);
+        $statm->execute([$idSerie]);
+        $donnee = $statm->fetch();
+        $serie = new Serie($donnee[1],$donnee[2],$donnee[3],$donnee[4],$donnee[6],$donnee[7]);
+
+        $requete = "SELECT * FROM episode WHERE id_serie = ?;";
+        $statm2 = $this->pdo->prepare($requete);
+        $statm2->execute([$idSerie]);
+        while ($donneeEpisodes = $statm2->fetch()){
+            $episode = new EpisodeSerie($donneeEpisodes[1],$donneeEpisodes[2],$donneeEpisodes[3],$donneeEpisodes[4],$donneeEpisodes[5]);
+            $serie->ajouterEpisode($episode);
+        }
+        return $serie;
     }
 }
