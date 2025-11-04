@@ -96,4 +96,19 @@ class NetvodRepository
         }
         return $serie;
     }
+
+    public function notePresente(int $id_user, int $id_serie) : bool{
+        $requete = "SELECT count(*) FROM notation WHERE id_serie = ? AND id_user = ?";
+        $statm = $this->pdo->prepare($requete);
+        $statm->execute([$id_user,$id_serie]);
+        $n = (int) $statm->fetch()[0];
+        return ($n === 1);
+    }
+
+    public function ajouterNoteEtCommentaire(int $id_user, int $id_serie, int $note, string $commentaire): void
+    {
+        $requete = "INSERT INTO notation VALUES (?,?,?,?);";
+        $statm = $this->pdo->prepare($requete);
+        $statm->execute([$id_serie,$id_user,$note,$commentaire]);
+    }
 }
