@@ -47,6 +47,7 @@ class Dispatcher {
                 <head>
                     <meta charset="UTF-8">
                     <title>NetVod - Visionnage de séries en ligne</title>
+                    <link rel="stylesheet" href="style.css">
                 </head>
             
                 <body>
