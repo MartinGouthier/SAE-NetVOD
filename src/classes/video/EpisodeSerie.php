@@ -13,6 +13,7 @@ class EpisodeSerie {
         $this->resume = $resume;
         $this->duree = $duree;
         $this->cheminFichier = $cheminFichier;
+        $this->id = $id;
     }
 
     public function __get(string $at):mixed {
