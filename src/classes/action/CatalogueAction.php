@@ -3,7 +3,7 @@
 namespace iutnc\netvod\action;
 
 use iutnc\netvod\repository\NetvodRepository;
-use iutnc\netvod\render\SerieRenderer;
+use iutnc\netvod\render\CatalogueRenderer;
 
 class CatalogueAction extends Action {
 
@@ -12,7 +12,7 @@ class CatalogueAction extends Action {
         $tab = $pdo->getSeries();
         $res = "<h2>Catalogue des séries</h2>";
         foreach ($tab as $s) {
-            $renderer = new SerieRenderer($s);
+            $renderer = new CatalogueRenderer($s);
             $res .= $renderer->render();
         }
         
