@@ -5,19 +5,21 @@ class EpisodeSerie {
     private string $titre;
     private string $resume;
     private int $duree;
-    private int $cheminFichier;
-    public function __construct(int $numero, string $titre, string $resume, int $duree, int $cheminFichier) {
+    private string $cheminFichier;
+    private int $id;
+    public function __construct(int $numero, string $titre, string $resume, int $duree, string $cheminFichier,int $id) {
         $this->numero = $numero;
         $this->titre = $titre;
         $this->resume = $resume;
         $this->duree = $duree;
         $this->cheminFichier = $cheminFichier;
+        $this->id = $id;
     }
 
     public function __get(string $at):mixed {
         if (property_exists ($this, $at)) {
             return $this->$at;
         }
-        throw new Exception ("$at: invalid property");
+        throw new \Exception ("$at: invalid property");
     }
 }

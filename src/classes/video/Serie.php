@@ -8,8 +8,9 @@ class Serie {
     private int $annee;
     private string $genre;
     private string $typePublic;
+    private int $id;
 
-    public function __construct(string $title, string $description, string $cheminImage,int $annee ,string $genre, string $typePublic, array  $episodes = []) {
+    public function __construct(string $title, string $description, string $cheminImage,int $annee ,string $genre, string $typePublic, int $id, array  $episodes = []) {
         $this->title = $title;
         $this->description = $description;
         $this->cheminImage = $cheminImage;
@@ -17,6 +18,7 @@ class Serie {
         $this->genre = $genre;
         $this->typePublic = $typePublic;
         $this->episodes = $episodes;
+        $this->id = $id;
     }
 
     public function __get(string $at):mixed {
