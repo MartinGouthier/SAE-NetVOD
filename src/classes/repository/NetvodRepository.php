@@ -75,7 +75,7 @@ class NetvodRepository
         $donnee = $statm->fetch();
         $serie = new Serie($donnee[1],$donnee[2],$donnee[3],$donnee[4],$donnee[6],$donnee[7]);
 
-        $requete = "SELECT * FROM episode WHERE id_serie = ?;";
+        $requete = "SELECT * FROM episode WHERE serie_id = ?;";
         $statm2 = $this->pdo->prepare($requete);
         $statm2->execute([$idSerie]);
         while ($donneeEpisodes = $statm2->fetch()){
@@ -86,7 +86,7 @@ class NetvodRepository
     }
 
     public function notePresente(int $id_user, int $id_serie) : bool{
-        $requete = "SELECT count(*) FROM notation WHERE id_serie = ? AND id_user = ?";
+        $requete = "SELECT count(*) FROM notation WHERE serie_id = ? AND id_user = ?";
         $statm = $this->pdo->prepare($requete);
         $statm->execute([$id_user,$id_serie]);
         $n = (int) $statm->fetch()[0];
