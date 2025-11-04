@@ -9,8 +9,13 @@ class CatalogueAction extends Action {
 
     public function GET(): string {
         $pdo = NetvodRepository::getInstance();
-        $renderer = new SerieRenderer($pdo->getSeries());
-        $res = $renderer->render();
+        $tab = $pdo->getSeries();
+        $res = "<h2>Catalogue des séries</h2>";
+        foreach ($tab as $s) {
+            $renderer = new SerieRenderer($s);
+            $res .= $renderer->render();
+        }
+        
         return $res;
     }
 
