@@ -20,15 +20,14 @@ class Dispatcher {
 
     public function run(): void {
         switch ($this->action) {
+            default:
+                $a = new DefaultAction();
+                break;
             case 'add-user':
                 $a = new AddUser();
                 break;
              case 'sign-in':
                 $a = new Signin();
-                break;
-            
-            default:
-                $a = new DefaultAction();
                 break;
             case 'catalogue':
                 $a = new CatalogueAction();
