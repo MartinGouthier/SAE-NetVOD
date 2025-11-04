@@ -4,17 +4,18 @@ namespace iutnc\netvod\repository;
 
 use iutnc\netvod\video\EpisodeSerie;
 use iutnc\netvod\video\Serie;
+use PDO;
 
 class NetvodRepository
 {
-    private \PDO $pdo;
+    private PDO $pdo;
     private static ?NetvodRepository $instance = null;
     private static array $config = [];
 
     private function __construct(array $conf)
     {
-        $this->pdo = new \PDO($conf['dsn'], $conf['user'], $conf['pass'],
-            [\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION]);
+        $this->pdo = new PDO($conf['dsn'], $conf['user'], $conf['pass'],
+            [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
     }
 
     public static function getInstance(): NetvodRepository

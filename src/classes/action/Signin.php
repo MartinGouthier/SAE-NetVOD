@@ -2,36 +2,37 @@
 namespace iutnc\netvod\action;
 
 
+use iutnc\netvod\auth\AuthnProvider;
+use iutnc\netvod\exception\AuthException;
+
 /**
  * Classe représentant l'action de connexion utilisateur
  */
 class Signin extends Action {
 
     public function POST(): string {
-    
+
         // Si l'utilisateur demande la déconnexion via le bouton
+        //TODO Faire le signout
         if (isset($_POST['signout'])) {
-            // AuthnProvider::signout();
+            //AuthnProvider::signout();
             return "<p>Déconnexion réussie.</p>";
         }
 
-
-          $email = $_POST['email'] ?? '';
-            $password = $_POST['password'] ?? '';
-
-            // Vérification des champs
-            if (empty($email) || empty($password)) {
-                return "<p>Veuillez remplir tous les champs.</p>";
+        {
+            $email = $_POST['email'];
+            $password = $_POST['password'];
+            try {
+                AuthnProvider::signin($email, $password);
+                $html = "<p>Connexion réussie</p>";
+            } catch (AuthException $e){
+                $html = "<b>" .$e->getMessage() . "</b>";
+                $html .= $this->GET();
             }
-
-            // Vérification de la validité de l'email et du password
-            if (AuthnProvider::signin($email, $password)) {
-                return "<p>Connexion réussie</p>";
-            }
-
-                return "<p>Connexion refusé</p>";
-
+            return $html;
         }
+
+    }
 
         /**
          * Si le formulaire de connexion est soumis
@@ -41,7 +42,7 @@ class Signin extends Action {
         
          // Si l'utilisateur est déjà connecté : afficher message + bouton déconnexion
         if (isset($_SESSION['user'])) {
-            $email = htmlspecialchars($_SESSION['user']['email']);
+            $email = $_SESSION['user'];
             return <<<HTML
             <div style="text-align:center; padding:20px;">
                 <h2>Vous êtes déjà connecté</h2>
@@ -57,28 +58,17 @@ class Signin extends Action {
         // Formulaire de connexion
         return <<<HTML
         <h2>Connexion utilisateur</h2>
-        <form method="post" action="?action=signin">
+        <form method="POST" action="?action=sign-in">
             <label for="email">Email :</label>
             <input type="email" id="email" name="email" required><br><br>
             
             <label for="password">Mot de passe :</label>
             <input type="password" id="password" name="password" required>
-            <button type="button" id="togglePassword">Afficher</button>
-            <br><br>
+            <br>
 
             <button type="submit">Connexion</button>
         </form>
-        <a href="?action=add-user">Créer un compte</a>
-        <script>
-        document.getElementById("togglePassword").addEventListener("click", function() {
-            const passwordField = document.getElementById("password");
-            const type = passwordField.getAttribute("type") === "password" ? "text" : "password";
-            passwordField.setAttribute("type", type);
-            
-            // Change le texte du bouton selon l'état
-            this.textContent = type === "password" ? "Afficher" : "Masquer";
-        });
-        </script>
+        
         HTML;
     
     }
