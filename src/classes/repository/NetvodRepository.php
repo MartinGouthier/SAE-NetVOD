@@ -42,10 +42,17 @@ class NetvodRepository
         return $statm->fetch();
     }
     public function registerNewUser(string $email,string $passwd) : void {
-        $requete = "INSERT INTO user (email, passwd, role) values (?, ?, 1);";
+        $requete = "INSERT INTO user (email, passwd, role) values (?, ?, 0);";
         $statm = $this->pdo->prepare($requete);
         $statm->bindParam(1,$email);
         $statm->bindParam(2,$passwd);
+        $statm->execute();
+    }
+
+    public function activationCompte(string $email): void {
+        $requete = "UPDATE user SET role = 1 WHERE email = ?";
+        $statm = $this->pdo->prepare($requete);
+        $statm->bindParam(1,$email);
         $statm->execute();
     }
 
