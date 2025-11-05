@@ -28,8 +28,8 @@ class AddCommentaireEtNote extends ActionConnecte {
     public function POST(): string {
         $serieId = (int)$_POST['serie'];
         $episodeId = (int)$_POST['episode'];
-        $note = (int)$_POST['note'];
-        $commentaire = $_POST['commentaire'];
+        $note      = (int)filter_var($_POST['note'], FILTER_SANITIZE_NUMBER_INT);
+        $commentaire = filter_var($_POST['commentaire'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
         $repo = NetvodRepository::getInstance();
         $userId = $repo->getUSerInfo(AuthnProvider::getSignedInUser())[2];
