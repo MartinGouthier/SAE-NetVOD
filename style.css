@@ -35,6 +35,10 @@ p {
     color : var(--main-color)
 }
 
+a {
+    color : var(--main-color);
+}
+
 
 /* ---------- Séparateurs ---------- */
 hr {
@@ -91,6 +95,24 @@ div {
 label {
     color: var(--main-color);
 
+}
+
+a[id*="Seconnecter"] {
+    display: block;
+    width: fit-content;
+    background-color: var(--main-color);
+    color: var(--text-color);
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    margin: 1rem auto; 
+    transition: background-color 0.2s ease, transform 0.15s ease;
+}
+
+a[id*="Seconnecter"]:hover {
+
+    transform: translateY(-2px);
 }
 
 /* ---------- Responsivité ---------- */
