@@ -5,7 +5,7 @@ namespace iutnc\netvod\action;
 use iutnc\netvod\repository\NetvodRepository;
 use iutnc\netvod\render\CatalogueRenderer;
 
-class CatalogueAction extends Action {
+class CatalogueAction extends ActionConnecte {
 
     public function GET(): string {
         $pdo = NetvodRepository::getInstance();
