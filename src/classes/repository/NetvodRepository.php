@@ -98,6 +98,13 @@ class NetvodRepository
         return $serie;
     }
 
+    public function getEpisodeById(int $idEpisode) : EpisodeSerie{
+        $requete = "SELECT * FROM episode WHERE id = ?";
+        $statm = $this->pdo->prepare($requete);
+        $statm->execute(["$idEpisode"]);
+        return $statm->fetch();
+    }
+
     public function notePresente(int $id_user, int $id_serie) : bool{
         $requete = "SELECT count(*) FROM notation WHERE serie_id = ? AND id_user = ?";
         $statm = $this->pdo->prepare($requete);
