@@ -18,6 +18,13 @@ class AuthnProvider
         $_SESSION['user'] = $email;
 
     }
+
+    public static function signout(): void {
+        if (isset($_SESSION['user'])) {
+            unset($_SESSION['user']);
+        }
+    }
+
     public static function register( string $email, string $pass): void {
         if (! filter_var($email, FILTER_VALIDATE_EMAIL))
             throw new AuthException("error : Email incorrect");
