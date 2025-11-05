@@ -22,7 +22,7 @@ class AddUser extends Action {
             AuthnProvider::register($email, $password);
             $html = <<<HTML
                 <p> Inscription réussie ! Vous pouvez maintenant vous connecter</p>
-                <a href="?action=sign-in">Se connecter</a>     
+                <a href="?action=sign-in" id="Seconnecter">Se connecter</a>     
             HTML;
         } catch (AuthException $e) {
 
@@ -39,7 +39,7 @@ class AddUser extends Action {
         return <<<HTML
         <h2>Inscription utilisateur</h2>
         <form method="post" action="?action=add-user">
-
+        
             <label for="email">Email :</label>
             <input type="email" id="email" name="email" required><br><br>
 
@@ -48,7 +48,7 @@ class AddUser extends Action {
             
             <label for="repassword">Confirmer votre Mot de passe :</label>
             <input type="password" id="RePassword" name="rePassword" required><br><br>
-
+          
             <button type="submit">S'inscrire</button>
         </form>
         HTML;

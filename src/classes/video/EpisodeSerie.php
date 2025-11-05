@@ -8,7 +8,7 @@ class EpisodeSerie {
     private string $cheminFichier;
     private int $id;
     private int $id_serie;
-    public function __construct(int $numero, string $titre, string $resume, int $duree, string $cheminFichier,int $id, int $id_serie) {
+    public function __construct(int $numero, string $titre, string $resume, int $duree, string $cheminFichier,int $id,int $id_serie) {
         $this->numero = $numero;
         $this->titre = $titre;
         $this->resume = $resume;

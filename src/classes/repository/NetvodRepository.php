@@ -26,7 +26,7 @@ class NetvodRepository
         return self::$instance;
     }
 
-    public static function setConfig(string $file)
+    public static function setConfig(string $file): void
     {
         $conf = parse_ini_file($file);
         if ($conf === false) {
@@ -92,7 +92,7 @@ class NetvodRepository
         $statm2 = $this->pdo->prepare($requete);
         $statm2->execute([$idSerie]);
         while ($donneeEpisodes = $statm2->fetch()){
-            $episode = new EpisodeSerie($donneeEpisodes[1],$donneeEpisodes[2],$donneeEpisodes[3],$donneeEpisodes[4],$donneeEpisodes[5],$donneeEpisodes[0]);
+            $episode = new EpisodeSerie($donneeEpisodes[1],$donneeEpisodes[2],$donneeEpisodes[3],$donneeEpisodes[4],$donneeEpisodes[5],$donneeEpisodes[0],$donneeEpisodes[6]);
             $serie->ajouterEpisode($episode);
         }
         return $serie;
@@ -103,7 +103,7 @@ class NetvodRepository
         $statm = $this->pdo->prepare($requete);
         $statm->execute(["$idEpisode"]);
         $donnee = $statm->fetch();
-        return new EpisodeSerie($donnee[1],$donnee[2],$donnee[3],$donnee[4],$donnee[5],$donnee[0]);
+        return new EpisodeSerie($donnee[1],$donnee[2],$donnee[3],$donnee[4],$donnee[5],$donnee[0],$donnee[6]);
     }
 
     public function notePresente(int $id_user, int $id_serie) : bool{
