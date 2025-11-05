@@ -16,10 +16,22 @@ class AddUser extends Action {
     public function POST(): string
     {
 
+        
         $email = $_POST['email'];
         $password = $_POST['password'];
+        
+        $token = AuthnProvider::register($email, $password);
+     
+        
+        $activationUrl = "http://localhost/td/SAE-NetVOD/?action=user-act?token=" . urlencode($token);
+        
+        
+        
+        
+        $email = $_POST['email'];
+        
         try {
-            AuthnProvider::register($email, $password);
+            
             $html = <<<HTML
                 <p> Inscription réussie ! Vous pouvez maintenant vous connecter</p>
                 <a href="?action=sign-in" id="Seconnecter">Se connecter</a>     
@@ -31,7 +43,7 @@ class AddUser extends Action {
         }
         return $html;
     }
-        // Récupération et filtrage des valeurs
+    
 
 
     // Si la requête est de type GET     

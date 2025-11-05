@@ -75,6 +75,9 @@ CREATE TABLE `user` (
   `email` varchar(256) NOT NULL,
   `passwd` varchar(256) NOT NULL,
   `role` int(1) NOT NULL DEFAULT 0,
+  `token` VARCHAR(64),
+  `token_expire` DATE, 
+  active TINYINT(1) DEFAULT 0
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

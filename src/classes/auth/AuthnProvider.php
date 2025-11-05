@@ -25,7 +25,7 @@ class AuthnProvider
         }
     }
 
-    public static function register( string $email, string $pass): void {
+    public static function register( string $email, string $pass): String {
         if (! filter_var($email, FILTER_VALIDATE_EMAIL))
             throw new AuthException("error : Email incorrect");
         if (strlen($pass) < 10)
@@ -35,9 +35,9 @@ class AuthnProvider
             throw new AuthException("Erreur : Email déja enregistré");
         }
         $hash = password_hash($pass, PASSWORD_DEFAULT, ['cost'=>12]);
-        $bdd->registerNewUser($email,$hash);
-
-    }
+        $token = $bdd->registerNewUser($email,$hash);
+        return $token ;
+    }       
 
     public static function getSignedInUser( ): string {
         if (!isset($_SESSION['user']))
