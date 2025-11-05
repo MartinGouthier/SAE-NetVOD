@@ -11,7 +11,7 @@ class SerieRenderer implements Renderer {
         $this->serie = $serie;
     }
 
-    public function render(): string {
+    public function render(int $selecteur=0): string {
         $affichage  = "<div class='serie'>";
         $affichage .= "<h2>" . htmlspecialchars($this->serie->__get("title")) . " (" . $this->serie->__get("annee") . ")</h2>";
         $affichage .= "<img src='" . htmlspecialchars($this->serie->__get("cheminImage")) . "' alt='Image de la série' width='200'>";
@@ -25,7 +25,7 @@ class SerieRenderer implements Renderer {
             $affichage .= "<h3>Épisodes :</h3>";
             foreach ($episodes as $episode) {
                 $renderer = new EpisodeSerieRenderer($episode);
-                $affichage .= $renderer->render();
+                $affichage .= $renderer->render(Renderer::COMPACT);
             }
         }
 
