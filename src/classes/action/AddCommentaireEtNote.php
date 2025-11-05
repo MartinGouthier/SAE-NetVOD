@@ -24,11 +24,11 @@ class AddCommentaireEtNote extends ActionConnecte {
     }
 
     public function POST(): string {
-        $serieId = $_POST['serie'];
-        $note = $_POST['note'];
+        $serieId = (int)$_POST['serie'];
+        $note = (int)$_POST['note'];
         $commentaire = $_POST['commentaire'];
 
-        $userId = AuthnProvider::getSignedInUser();
+        $userId = (int)AuthnProvider::getSignedInUser();
 
         $repo = NetvodRepository::getInstance();
 
@@ -57,7 +57,6 @@ class AddCommentaireEtNote extends ActionConnecte {
 
         return <<<END
             <b>Commentaire ajouté avec succès.</b><br>
-            <a href='?action=displayEpisode&serie=$serieId'>Retour à la série</a>
         END;
     }
 }

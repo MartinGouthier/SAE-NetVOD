@@ -3,10 +3,10 @@ namespace iutnc\netvod\action;
 
 use iutnc\netvod\repository\NetvodRepository;
 
-class DisplayEpisode extends Action {
+class DisplayEpisode extends ActionConnecte {
 
     public function GET(): string {
-        $serieID = $_GET["serieID"];
+        $serieId = $_GET["serieID"];
         $episodeId = $_GET['episode'];
 
         $repo = NetvodRepository::getInstance();
@@ -16,7 +16,7 @@ class DisplayEpisode extends Action {
             <h3>Épisode: $episode->titre</h3>
             <p>$episode->resume</p>
             <video controls>
-                <source src="{$episode->chemin}" type="video/mp4">
+                <source src="$episode->cheminFichier" type="video/mp4">
                 Votre navigateur ne supporte pas la vidéo.
             </video><br><br>
         END;
