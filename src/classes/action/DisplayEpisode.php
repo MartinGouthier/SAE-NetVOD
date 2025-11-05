@@ -6,17 +6,17 @@ use iutnc\netvod\repository\NetvodRepository;
 class DisplayEpisode extends Action {
 
     public function GET(): string {
-        $serieId = $_GET['serie'];
+        $serieID = $_GET["serieID"];
         $episodeId = $_GET['episode'];
 
         $repo = NetvodRepository::getInstance();
         $episode = $repo->getEpisodeById($episodeId);
 
         $episodeDetails = <<<END
-            <h3>Épisode: {$episode['titre']}</h3>
-            <p>{$episode['description']}</p>
+            <h3>Épisode: $episode->titre</h3>
+            <p>$episode->resume</p>
             <video controls>
-                <source src="{$episode['video_url']}" type="video/mp4">
+                <source src="{$episode->chemin}" type="video/mp4">
                 Votre navigateur ne supporte pas la vidéo.
             </video><br><br>
         END;
