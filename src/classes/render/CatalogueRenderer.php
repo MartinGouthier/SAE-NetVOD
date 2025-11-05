@@ -14,7 +14,7 @@ class CatalogueRenderer implements Renderer {
     public function render(): string {
         $affichage  = "<div class='serie'>";
         $affichage .= "<h2>" . htmlspecialchars($this->serie->__get("title")) . " (" . $this->serie->__get("annee") . ")</h2>";
-        $affichage .= "<a href=?action=ActionAfficheSerie?id='". $this->serie->__get("id") ."'><img src='". "image\\" . htmlspecialchars($this->serie->__get("cheminImage")) . "' alt='Image de la série' width='200'></a>";
+        $affichage .= "<a href=?action=ActionAfficheSerie?id=". $this->serie->__get("id") ."><img src='". "image\\" . htmlspecialchars($this->serie->__get("cheminImage")) . "' alt='Image de la série' width='200'></a>";
         $affichage .= "</div>";
 
         return $affichage;
