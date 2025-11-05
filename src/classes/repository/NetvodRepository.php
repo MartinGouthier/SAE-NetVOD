@@ -46,18 +46,18 @@ class NetvodRepository
         return $statm->fetch();
     }
     public function registerNewUser(string $email,string $passwd) : String {
-        $requete = "INSERT INTO user (email, passwd, role, token, token_expire) values (?, ?, 0);";
+        $requete = "INSERT INTO user (email, passwd, role, token, token_expire) values (?, ?, 0, ?, ?);";
        
-        $p = new OAuthProvider();
-        $token = $p->generateToken(10);
+    
+        $token = bin2hex(random_bytes(32));
         $expire = date('Y-m-d H:i:s', time() + 3600); // expire dans 1h
 
       
         $statm = $this->pdo->prepare($requete);
         $statm->bindParam(1,$email);
         $statm->bindParam(2,$passwd);
-        $statm->bindParam(4,$token);
-        $statm->bindParam(5,$expire);
+        $statm->bindParam(3,$token);
+        $statm->bindParam(4,$expire);
         $statm->execute();
 
         return $token ;

@@ -71,15 +71,16 @@ INSERT INTO `episode` (`id`, `numero`, `titre`, `resume`, `duree`, `file`, `seri
 
 
 CREATE TABLE `user` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `email` varchar(256) NOT NULL,
-  `passwd` varchar(256) NOT NULL,
-  `role` int(1) NOT NULL DEFAULT 0,
-  `token` VARCHAR(64),
-  `token_expire` DATE, 
-  active TINYINT(1) DEFAULT 0
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `email` VARCHAR(256) NOT NULL,
+  `passwd` VARCHAR(256) NOT NULL,
+  `role` INT(1) NOT NULL DEFAULT 0,
+  `token` VARCHAR(64) DEFAULT NULL,
+  `token_expire` DATETIME DEFAULT NULL,
+  `active` TINYINT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 
 CREATE TABLE `seriePreferees`(
     `id_serie` int(11) NOT NULL,
