@@ -8,7 +8,8 @@ use iutnc\netvod\repository\NetvodRepository;
 class AddCommentaireEtNote extends ActionConnecte {
 
     public function GET(): string {
-        $serieId = $_GET['serie'];
+        $serieId = $_GET["id_serie"];
+        echo($serieId);
 
         return <<<END
             <form method='post' action='?action=add-commentary-note'>
@@ -53,6 +54,7 @@ class AddCommentaireEtNote extends ActionConnecte {
             END;
         }
 
+        echo($serieId);
         $repo->ajouterNoteEtCommentaire($userId, $serieId, $note, $commentaire);
 
         return <<<END
