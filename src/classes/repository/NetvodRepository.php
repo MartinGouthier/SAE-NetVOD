@@ -114,20 +114,39 @@ class NetvodRepository
         return $tab;
     }
 
-    public function addSerieEnCours(int $id_serie, int $id_user, int $etat = 0): void {
+    public function updateSerieEnCours(int $id_serie, int $id_user): void {
         $requete = "SELECT COUNT(*) FROM serieEnCours WHERE id_serie = ? AND id_user = ?;";
         $statm = $this->pdo->prepare($requete);
         $statm->execute([$id_serie, $id_user]);
         $existe = (int) $statm->fetch()[0];
         if ($existe === 0) {
-            $requete = "INSERT INTO serieEnCours (id_serie, id_user, etatVisionnage) VALUES (?, ?, ?);";
+            $requete = "INSERT INTO serieEnCours (id_serie, id_user, etatVisionnage) VALUES (?, ?, 0);";
             $statm = $this->pdo->prepare($requete);
-            $statm->execute([$id_serie, $id_user, $etat]);
+            $statm->execute([$id_serie, $id_user]);
         } else {
-            // Mise à jour de l’état (par ex. si la série est terminée)
-            $requete = "UPDATE serieEnCours SET etatVisionnage = ? WHERE id_serie = ? AND id_user = ?;";
-            $statm = $this->pdo->prepare($requete);
-            $statm->execute([$etat, $id_serie, $id_user]);
+
+            $requete = <<<SQL
+                            -- Nbr d'épisodes visionnés
+                            SELECT count(*) FROM episodevisionne 
+                            INNER JOIN episode ON episode.id = episodevisionne.id_episode
+                            WHERE serie_id = ? AND id_user = ?
+            SQL;
+            $statm1 = $this->pdo->prepare($requete);
+            $statm1->execute([$id_serie,$id_user]);
+            $nbrVisionne = (int) $statm1->fetch()[0];
+            $requete = <<<SQL
+                        -- Nbr d'épisodes dans la série
+                        SELECT count(*) FROM episode
+                        WHERE serie_id = ?;
+                        SQL;
+            $statm2 = $this->pdo->prepare($requete);
+            $statm2->execute([$id_serie]);
+            $nbrEpisodes = (int) $statm2->fetch()[0];
+            if ($nbrEpisodes ===  $nbrVisionne) {
+                $requete = "UPDATE serieEnCours SET etatVisionnage = 1 WHERE id_serie = ? AND id_user = ?;";
+                $statm3 = $this->pdo->prepare($requete);
+                $statm3->execute([$id_serie, $id_user]);
+            }
         }
     }
 
@@ -140,6 +159,17 @@ class NetvodRepository
             $serie = $this->getSerieById($donnee['id_serie']);
             $serie->etatVisionnage = $donnee['etatVisionnage']; // pratique pour affichage
             $tab[] = $serie;
+        }
+        return $tab;
+    }
+
+    public function getSeriesTerminees(int $id_user) : array{
+        $requete = "SELECT id_serie FROM serieencours WHERE etatVisionnage = 1 AND id_user = ?;";
+        $statm = $this->pdo->prepare($requete);
+        $statm->execute([$id_user]);
+        $tab = [];
+        while ($donnee = $statm->fetch()){
+            $tab[] = $this->getSerieById($donnee[0]);
         }
         return $tab;
     }
