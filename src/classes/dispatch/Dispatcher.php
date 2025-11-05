@@ -27,6 +27,9 @@ class Dispatcher {
             case 'add-user':
                 $a = new AddUser();
                 break;
+            case 'add-commentary-note':
+                $a = new AddCommentaireEtNote();
+                break;
              case 'sign-in':
                 $a = new Signin();
                 break;
