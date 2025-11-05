@@ -120,4 +120,16 @@ class NetvodRepository
         $statm = $this->pdo->prepare($requete);
         $statm->execute([$id_serie,$id_user,$note,$commentaire]);
     }
+
+    public function getMoyennesSeries() : array {
+        $requete = "SELECT id_serie, avg(note) FROM notation GROUP BY id_serie ORDER BY avg(note) DESC;";
+        $statm = $this->pdo->prepare($requete);
+        $tab = [];
+        $statm->execute();
+        while ($donnee = $statm->fetch()){
+            $tab[] = $donnee;
+        }
+        // Resultat sous forme [[MeilleurNote,id_serie],[2emeNote, id_serie]...]
+        return $tab;
+    }
 }
