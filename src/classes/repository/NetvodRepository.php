@@ -73,7 +73,6 @@ class NetvodRepository
         $requete = "SELECT id FROM serie;";
         $tab = [];
         $statm = $this->pdo->query($requete);
-        $statm->execute();
         while ($donnee = $statm->fetch()){
             $serie = $this->getSerieById($donnee[0]);
             $tab[] = $serie;
