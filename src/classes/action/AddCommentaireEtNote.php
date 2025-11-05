@@ -28,10 +28,10 @@ class AddCommentaireEtNote extends ActionConnecte {
         $serieId = (int)$_POST['serie'];
         $note = (int)$_POST['note'];
         $commentaire = $_POST['commentaire'];
-
-        $userId = (int)AuthnProvider::getSignedInUser();
-
         $repo = NetvodRepository::getInstance();
+
+        $userId = $repo->getUSerInfo(AuthnProvider::getSignedInUser())[2];
+
 
         if ($repo->notePresente($userId, $serieId)) {
             return <<<END
@@ -53,7 +53,6 @@ class AddCommentaireEtNote extends ActionConnecte {
                 <a href='?action=add-commentary-note&serie=$serieId'>Réessayer</a>
             END;
         }
-
         echo($serieId);
         $repo->ajouterNoteEtCommentaire($userId, $serieId, $note, $commentaire);
 
