@@ -180,6 +180,13 @@ class NetvodRepository
         $statm->execute([$id_serie,$id_user]);
     }
 
+    public function retirerSeriePref(int $id_serie, int $id_user): void
+    {
+        $requete = "DELETE FROM seriepreferees WHERE id_serie = ? AND id_user = ?;";
+        $statm = $this->pdo->prepare($requete);
+        $statm->execute([$id_serie,$id_user]);
+    }
+
     public function getSeriesPref(int $id_user) : array{
         $requete = "SELECT id_serie FROM seriepreferees WHERE id_user = ?;";
         $statm = $this->pdo->prepare($requete);
