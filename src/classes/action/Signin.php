@@ -15,7 +15,7 @@ class Signin extends Action {
         // Si l'utilisateur demande la déconnexion via le bouton
         //TODO Faire le signout
         if (isset($_POST['signout'])) {
-            //AuthnProvider::signout();
+            AuthnProvider::signout();
             return "<p>Déconnexion réussie.</p>";
         }
 
@@ -47,10 +47,10 @@ class Signin extends Action {
             <div style="text-align:center; padding:20px;">
                 <h2>Vous êtes déjà connecté</h2>
                 <p>Connecté en tant que : <strong>$email</strong></p>
-               <form method="post" action="?action=signin">
+               <form method="post" action="?action=sign-in">
                     <input type="hidden" name="signout" value="1">
-                    <button type="submit">Se déconnecter
-                    </button>
+                    <button type="submit">Se déconnecter</button>
+                </form>
             </div>
             HTML;
         }

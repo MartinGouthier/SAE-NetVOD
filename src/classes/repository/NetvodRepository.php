@@ -69,6 +69,18 @@ class NetvodRepository
         return ((int)$nbr !== 0);
     }
 
+    public function getSeries() : array {
+        $requete = "SELECT id FROM serie;";
+        $tab = [];
+        $statm = $this->pdo->query($requete);
+        $statm->execute();
+        while ($donnee = $statm->fetch()){
+            $serie = $this->getSerieById($donnee[0]);
+            $tab[] = $serie;
+        }
+        return $tab;
+    }
+    
     public function getSerieById(int $idSerie) : Serie {
         $requete = "SELECT * FROM serie WHERE id = ?;";
         $statm = $this->pdo->prepare($requete);
@@ -84,6 +96,13 @@ class NetvodRepository
             $serie->ajouterEpisode($episode);
         }
         return $serie;
+    }
+
+    public function getEpisodeById(int $idEpisode) : EpisodeSerie{
+        $requete = "SELECT * FROM episode WHERE id = ?";
+        $statm = $this->pdo->prepare($requete);
+        $statm->execute(["$idEpisode"]);
+        return $statm->fetch();
     }
 
     public function notePresente(int $id_user, int $id_serie) : bool{

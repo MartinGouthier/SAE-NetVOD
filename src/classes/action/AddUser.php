@@ -44,7 +44,7 @@ class AddUser extends Action {
             <input type="email" id="email" name="email" required><br><br>
 
             <label for="password">Mot de passe :</label>
-            <input type="password" id="Password" name="Password" required><br><br>
+            <input type="password" id="password" name="password" required><br><br>
             
             <label for="repassword">Confirmer votre Mot de passe :</label>
             <input type="password" id="RePassword" name="rePassword" required><br><br>
