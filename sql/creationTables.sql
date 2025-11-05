@@ -26,12 +26,12 @@ CREATE TABLE `serie` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO `serie` (`id`, `titre`, `descriptif`, `img`, `annee`, `date_ajout`,`genre`,`typePublic`) VALUES
-(1,	'Le lac aux mystères',	'C\'est l\'histoire d\'un lac mystérieux et plein de surprises. La série, bluffante et haletante, nous entraine dans un labyrinthe d\'intrigues époustouflantes. A ne rater sous aucun prétexte !',	'',	2020,	'2022-10-30','thriller','Tout publique'),
-(2,	'L\'eau a coulé',	'Une série nostalgique qui nous invite à revisiter notre passé et à se remémorer tout ce qui s\'est passé depuis que tant d\'eau a coulé sous les ponts.',	'',	1907,	'2022-10-29','documentaire','Tout publique'),
-(3,	'Chevaux fous',	'Une série sur la vie des chevaux sauvages en liberté. Décoiffante.',	'',	2017,	'2022-10-31','Documentaire','Tout publique'),
-(4,	'A la plage',	'Le succès de l\'été 2021, à regarder sans modération et entre amis.',	'',	2021,	'2022-11-04','Comédie','Jeunes'),
-(5,	'Champion',	'La vie trépidante de deux champions de surf, passionnés dès leur plus jeune age. Ils consacrent leur vie à ce sport. ',	'',	2022,	'2022-11-03','Sport','Jeunes'),
-(6,	'Une ville la nuit',	'C\'est beau une ville la nuit, avec toutes ces voitures qui passent et qui repassent. La série suit un livreur, un chauffeur de taxi, et un insomniaque. Tous parcourent la grande ville une fois la nuit venue, au volant de leur véhicule.',	'',	2017,	'2022-10-31','Thriller','Tout publique');
+(1,	'Le lac aux mystères',	'C\'est l\'histoire d\'un lac mystérieux et plein de surprises. La série, bluffante et haletante, nous entraine dans un labyrinthe d\'intrigues époustouflantes. A ne rater sous aucun prétexte !',	'lake.png',	2020,	'2022-10-30','thriller','Tout publique'),
+(2,	'L\'eau a coulé',	'Une série nostalgique qui nous invite à revisiter notre passé et à se remémorer tout ce qui s\'est passé depuis que tant d\'eau a coulé sous les ponts.',	'water.png',	1907,	'2022-10-29','documentaire','Tout publique'),
+(3,	'Chevaux fous',	'Une série sur la vie des chevaux sauvages en liberté. Décoiffante.',	'horses.png',	2017,	'2022-10-31','Documentaire','Tout publique'),
+(4,	'A la plage',	'Le succès de l\'été 2021, à regarder sans modération et entre amis.',	'beach.png',	2021,	'2022-11-04','Comédie','Jeunes'),
+(5,	'Champion',	'La vie trépidante de deux champions de surf, passionnés dès leur plus jeune age. Ils consacrent leur vie à ce sport. ',	'surf.png',	2022,	'2022-11-03','Sport','Jeunes'),
+(6,	'Une ville la nuit',	'C\'est beau une ville la nuit, avec toutes ces voitures qui passent et qui repassent. La série suit un livreur, un chauffeur de taxi, et un insomniaque. Tous parcourent la grande ville une fois la nuit venue, au volant de leur véhicule.',	'cars-by-night.png',	2017,	'2022-10-31','Thriller','Tout publique');
 
 CREATE TABLE `episode` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
