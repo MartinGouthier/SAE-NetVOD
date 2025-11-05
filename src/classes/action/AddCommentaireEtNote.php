@@ -9,11 +9,12 @@ class AddCommentaireEtNote extends ActionConnecte {
 
     public function GET(): string {
         $serieId = $_GET["id_serie"];
-        echo($serieId);
+        $episodeId = $_GET["episode"];
 
         return <<<END
             <form method='post' action='?action=add-commentary-note'>
                 <input type='hidden' name='serie' value='$serieId'>
+                <input type='hidden' name='episode' value='$episodeId'>
         
                 Note : <input type='number' name='note'><br><br>
                 Commentaire : <br>
@@ -26,38 +27,32 @@ class AddCommentaireEtNote extends ActionConnecte {
 
     public function POST(): string {
         $serieId = (int)$_POST['serie'];
+        $episodeId = (int)$_POST['episode'];
         $note = (int)$_POST['note'];
         $commentaire = $_POST['commentaire'];
-        $repo = NetvodRepository::getInstance();
 
+        $repo = NetvodRepository::getInstance();
         $userId = $repo->getUSerInfo(AuthnProvider::getSignedInUser())[2];
 
+        $message = '';
 
         if ($repo->notePresente($userId, $serieId)) {
-            return <<<END
-                <b>Erreur :</b> vous avez déjà noté cette série.<br>
-                <a href='?action=displayEpisode&serie=$serieId'>Retour</a>
-            END;
+            $message = "<b>Erreur :</b> vous avez déjà noté cette série.";
+        }
+        elseif ($note < 1 || $note > 5) {
+            $message = "<b>Erreur :</b> la note doit être comprise entre 1 et 5.";
+        }
+        elseif ($commentaire === '') {
+            $message = "<b>Erreur :</b> le commentaire ne peut pas être vide.";
+        }
+        else {
+            $repo->ajouterNoteEtCommentaire($userId, $serieId, $note, $commentaire);
+            $message = "<b>Commentaire ajouté avec succès.</b>";
         }
 
-        if ($note === '' || $note < 1 || $note > 5) {
-            return <<<END
-                <b>Erreur :</b> la note doit être un nombre entre 1 et 5.<br>
-                <a href='?action=add-commentary-note&serie=$serieId'>Réessayer</a>
-            END;
-        }
-
-        if (trim($commentaire) === '') {
-            return <<<END
-                <b>Erreur :</b> le commentaire ne peut pas être vide.<br>
-                <a href='?action=add-commentary-note&serie=$serieId'>Réessayer</a>
-            END;
-        }
-        echo($serieId);
-        $repo->ajouterNoteEtCommentaire($userId, $serieId, $note, $commentaire);
-
-        return <<<END
-            <b>Commentaire ajouté avec succès.</b><br>
-        END;
+        $_GET['episode'] = $episodeId;
+        $display = new DisplayEpisode();
+        $display->setMessage($message);
+        return $display->GET();
     }
 }
