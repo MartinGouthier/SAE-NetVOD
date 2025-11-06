@@ -2,6 +2,7 @@
 
 namespace iutnc\netvod\action;
 
+use iutnc\netvod\render\Renderer;
 use iutnc\netvod\render\SerieRenderer;
 use iutnc\netvod\repository\NetvodRepository;
 
@@ -18,7 +19,7 @@ class DisplaySerie extends ActionConnecte
             $bdd = NetvodRepository::getInstance();
             $serie = $bdd->getSerieById($id_serie);
             $renderer = new SerieRenderer($serie);
-            $html = $renderer->render();
+            $html = $renderer->render(Renderer::LONG);
         }
         return $html;
     }

@@ -11,10 +11,13 @@ class SerieRenderer implements Renderer {
         $this->serie = $serie;
     }
 
-    public function render(int $selecteur=0): string {
+    public function render(int $selecteur): string {
         $affichage  = "<div class='serie'>";
         $affichage .= "<h2>" . htmlspecialchars($this->serie->__get("title")) . " (" . $this->serie->__get("annee") . ")</h2>";
-        $affichage .= "<img src='" . htmlspecialchars($this->serie->__get("cheminImage")) . "' alt='Image de la série' width='200'>";
+        if ($selecteur === Renderer::LONG)
+            $affichage .= "<img src='". "image\\" . htmlspecialchars($this->serie->__get("cheminImage")) . "' alt='Image de la série' width='200'>";
+        else
+            $affichage .= "<a href=?action=display-serie&id_serie=". $this->serie->__get("id") ."><img src='". "image\\" . htmlspecialchars($this->serie->__get("cheminImage")) . "' alt='Image de la série' width='200'></a>";
         $affichage .= "<p><strong>Genre :</strong> " . htmlspecialchars($this->serie->__get("genre")) . "</p>";
         $affichage .= "<p><strong>Public :</strong> " . htmlspecialchars($this->serie->__get("typePublic")) . "</p>";
         $affichage .= "<p><strong>Description :</strong> " . htmlspecialchars($this->serie->__get("description")) . "</p>";
