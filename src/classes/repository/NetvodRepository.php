@@ -136,9 +136,9 @@ class NetvodRepository
         // Filtre 1 = Mot Clé
         if ($typeFiltre === 1) {
             //TODO Tester et verifier si LIKE fonctionne
-            $requete = "SELECT id FROM serie WHERE titre LIKE '%?%' OR descriptif LIKE '%?%';";
+            $requete = "SELECT id FROM serie WHERE titre LIKE ? OR descriptif LIKE ?;";
             $statm = $this->pdo->prepare($requete);
-            $statm->execute([$filtre,$filtre]);
+            $statm->execute(["%$filtre%","%$filtre%"]);
         }else {
             // Filtre 2 = Genre
             if ($typeFiltre === 2)
