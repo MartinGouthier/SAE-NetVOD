@@ -10,7 +10,7 @@ use iutnc\netvod\action\DefaultAction;
 use iutnc\netvod\action\CatalogueAction;
 use iutnc\netvod\action\AddUser;
 use iutnc\netvod\action\Signin;
-
+use iutnc\netvod\action\UserProfile;
 
 class Dispatcher {
     private string $action;
@@ -44,6 +44,9 @@ class Dispatcher {
             case 'display-serie':
                 $a = new DisplaySerie();
                 break;
+            case 'user-profile':
+                $a = new UserProfile();
+                break;
         }
         $html = $a->execute();
         // Si un utilisateur est connecté, on l'affiche au dessus du contenu
@@ -66,14 +69,14 @@ class Dispatcher {
                 </head>
             
                 <body>
-                    <h1>NetVod</h1>
+                    <h1 id="logo"><img src="image\\fishing-net.png" alt="Logo NetVod">VOD</h1>
                     <p>Application de visionnage de séries</p>
                     <hr>
             
                     <p>
                         <a href="?action=sign-in">Connexion</a> |
-                        <a href="?action=add-user">Inscription</a>
-                       
+                        <a href="?action=add-user">Inscription</a> |
+                        <a href="?action=user-profile">Profil utilisateur</a>
                     </p>
             
                     <hr>
