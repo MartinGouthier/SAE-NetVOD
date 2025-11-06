@@ -37,7 +37,7 @@ class NetvodRepository
         self::$config = ['dsn' => $dsn, 'user' => $conf['username'], 'pass' => $conf['password']];
     }
 
-    public function getUserInfo(string $email) : array
+    public function getUserInfo(string $email) : array|bool
     {
         $requete = "SELECT passwd, role, id FROM user WHERE email = ?;";
         $statm = $this->pdo->prepare($requete);
