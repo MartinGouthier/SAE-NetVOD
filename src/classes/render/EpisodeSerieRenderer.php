@@ -23,9 +23,10 @@ class EpisodeSerieRenderer implements Renderer {
         $affichage .= "<p>Durée : " . $this->episode->__get("duree") . " min</p>";
         $affichage .= "<p>Résumé : " . htmlspecialchars($this->episode->__get("resume")) . "</p>";
         $affichage .= "<video controls width='400'>
-                          <source src='" . htmlspecialchars($this->episode->__get("cheminFichier")) . "' type='video/mp4'>
+                          <source src='" . "video\\" . htmlspecialchars($this->episode->__get("cheminFichier")). "' type='video/mp4'>
                           Votre navigateur ne supporte pas la lecture vidéo.
                        </video>";
+        var_dump($this->episode);
         $affichage .= "</div>";
 
         return $affichage;
