@@ -22,6 +22,11 @@ class SerieRenderer implements Renderer {
         $affichage .= "<p><strong>Public :</strong> " . htmlspecialchars($this->serie->__get("typePublic")) . "</p>";
         $affichage .= "<p><strong>Description :</strong> " . htmlspecialchars($this->serie->__get("description")) . "</p>";
 
+        $affichage .= <<<HTML
+                     <form action=?action=add-series-pref method=post>
+                       <input type="submit" value = "Ajouter aux favoris">
+                        <input type = "hidden" name="id_serie" value={$this->serie->__get("id")}>
+        HTML;
         // Rendu des épisodes
         if ($selecteur === Renderer::LONG) {
             $episodes = $this->serie->__get("episodes");

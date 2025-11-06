@@ -3,6 +3,7 @@
 namespace iutnc\netvod\dispatch;
 
 use iutnc\netvod\action\AddCommentaireEtNote;
+use iutnc\netvod\action\AddSeriePrefAction;
 use iutnc\netvod\action\DisplayEpisode;
 use iutnc\netvod\action\DisplaySerie;
 use iutnc\netvod\auth\AuthnProvider;
@@ -43,6 +44,9 @@ class Dispatcher {
                 break;
             case 'display-serie':
                 $a = new DisplaySerie();
+                break;
+            case 'add-series-pref':
+                $a =new AddSeriePrefAction();
                 break;
         }
         $html = $a->execute();
