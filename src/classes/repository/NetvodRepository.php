@@ -37,7 +37,7 @@ class NetvodRepository
         self::$config = ['dsn' => $dsn, 'user' => $conf['username'], 'pass' => $conf['password']];
     }
 
-    public function getUserInfo(string $email) : array
+    public function getUserInfo(string $email) : array|bool
     {
         $requete = "SELECT passwd, role, id FROM user WHERE email = ?;";
         $statm = $this->pdo->prepare($requete);
@@ -135,10 +135,9 @@ class NetvodRepository
     public function getSeriesFiltre(int $typeFiltre, string $filtre) : array {
         // Filtre 1 = Mot Clé
         if ($typeFiltre === 1) {
-            //TODO Tester et verifier si LIKE fonctionne
-            $requete = "SELECT id FROM serie WHERE titre LIKE '%?%' OR descriptif LIKE '%?%';";
+            $requete = "SELECT id FROM serie WHERE titre LIKE ? OR descriptif LIKE ?;";
             $statm = $this->pdo->prepare($requete);
-            $statm->execute([$filtre,$filtre]);
+            $statm->execute(["%$filtre%","%$filtre%"]);
         }else {
             // Filtre 2 = Genre
             if ($typeFiltre === 2)
