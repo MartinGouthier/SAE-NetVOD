@@ -20,12 +20,14 @@ class SerieRenderer implements Renderer {
         $affichage .= "<p><strong>Description :</strong> " . htmlspecialchars($this->serie->__get("description")) . "</p>";
 
         // Rendu des épisodes
-        $episodes = $this->serie->__get("episodes");
-        if (!empty($episodes)) {
-            $affichage .= "<h3>Épisodes :</h3>";
-            foreach ($episodes as $episode) {
-                $renderer = new EpisodeSerieRenderer($episode);
-                $affichage .= $renderer->render(Renderer::COMPACT);
+        if ($selecteur === Renderer::LONG) {
+            $episodes = $this->serie->__get("episodes");
+            if (!empty($episodes)) {
+                $affichage .= "<h3>Épisodes :</h3>";
+                foreach ($episodes as $episode) {
+                    $renderer = new EpisodeSerieRenderer($episode);
+                    $affichage .= $renderer->render(Renderer::COMPACT);
+                }
             }
         }
 
