@@ -210,19 +210,6 @@ class NetvodRepository
         $statm->execute([$id_user]);
     }
 
-    public function getSeriesEnCours(int $id_user): array {
-        $requete = "SELECT id_serie, etatVisionnage FROM serieEnCours WHERE id_user = ?;";
-        $statm = $this->pdo->prepare($requete);
-        $statm->execute([$id_user]);
-        $tab = [];
-        while ($donnee = $statm->fetch()) {
-            $serie = $this->getSerieById($donnee['id_serie']);
-            $serie->etatVisionnage = $donnee['etatVisionnage'];
-            $tab[] = $serie;
-        }
-        return $tab;
-    }
-
     public function addSeriePref(int $id_serie,int $id_user) : void{
         $requete = "INSERT INTO seriepreferees VALUES (?,?);";
         $statm = $this->pdo->prepare($requete);
@@ -236,23 +223,6 @@ class NetvodRepository
         $statm->execute([$id_serie,$id_user]);
     }
 
-    public function getSeriesTerminees(int $id_user) : array{
-        $requete = "SELECT id_serie FROM serieencours WHERE etatVisionnage = 1 AND id_user = ?;";
-        $statm = $this->pdo->prepare($requete);
-        $statm->execute([$id_user]);
-        $tab = [];
-        while ($donnee = $statm->fetch()){
-            $tab[] = $this->getSerieById($donnee[0]);
-        }
-        return $tab;
-    }
-
-    public function supSeriePref(int $id_user,int $id_serie) : void{
-        $requete = "DELETE FROM seriepreferees WHERE id_user = ?;";
-        $statm = $this->pdo->prepare($requete);
-        $statm->execute([$id_user]);
-    }
-
     public function getSeriesEnCours(int $id_user): array {
         $requete = "SELECT id_serie, etatVisionnage FROM serieEnCours WHERE id_user = ?;";
         $statm = $this->pdo->prepare($requete);
@@ -264,19 +234,6 @@ class NetvodRepository
             $tab[] = $serie;
         }
         return $tab;
-    }
-
-    public function addSeriePref(int $id_serie,int $id_user) : void{
-        $requete = "INSERT INTO seriepreferees VALUES (?,?);";
-        $statm = $this->pdo->prepare($requete);
-        $statm->execute([$id_serie,$id_user]);
-    }
-
-    public function retirerSeriePref(int $id_serie, int $id_user): void
-    {
-        $requete = "DELETE FROM seriepreferees WHERE id_serie = ? AND id_user = ?;";
-        $statm = $this->pdo->prepare($requete);
-        $statm->execute([$id_serie,$id_user]);
     }
 
     public function getSeriesTerminees(int $id_user) : array{
