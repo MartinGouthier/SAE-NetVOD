@@ -2,6 +2,8 @@
 
 namespace iutnc\netvod\dispatch;
 
+use iutnc\netvod\action\AddCommentaireEtNote;
+use iutnc\netvod\action\DisplayEpisode;
 use iutnc\netvod\action\DisplaySerie;
 use iutnc\netvod\auth\AuthnProvider;
 use iutnc\netvod\action\DefaultAction;
@@ -26,6 +28,12 @@ class Dispatcher {
                 break;
             case 'add-user':
                 $a = new AddUser();
+                break;
+            case 'add-commentary-note':
+                $a = new AddCommentaireEtNote();
+                break;
+            case 'display-episode':
+                $a = new DisplayEpisode();
                 break;
              case 'sign-in':
                 $a = new Signin();
@@ -54,7 +62,7 @@ class Dispatcher {
                 <head>
                     <meta charset="UTF-8">
                     <title>NetVod - Visionnage de séries en ligne</title>
-                    <link rel="stylesheet" href="style.css?v=<?php echo time(); ?>">
+                    <link rel="stylesheet" href="style.css">
                 </head>
             
                 <body>
@@ -62,7 +70,12 @@ class Dispatcher {
                     <p>Application de visionnage de séries</p>
                     <hr>
             
-                
+                    <p>
+                        <a href="?action=sign-in">Connexion</a> |
+                        <a href="?action=add-user">Inscription</a>
+                       
+                    </p>
+            
                     <hr>
             
                     <h2>Menu principal</h2>
@@ -71,8 +84,6 @@ class Dispatcher {
                         <li><a href="?action=catalogue">Catalogue</a></li>
                         <li><a href="?action=preference">Mes préférences</a></li>
                         <li><a href="?action=viewed">Mes visionages</a></li>
-                        <li><a href="?action=sign-in">Connexion</a></li>
-                        <li><a href="?action=add-user">Inscription</a></li>
                     </ul>
             
                     <hr>
