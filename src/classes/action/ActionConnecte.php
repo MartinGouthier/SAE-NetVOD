@@ -13,7 +13,7 @@ abstract class ActionConnecte extends Action
             AuthnProvider::getSignedInUser();
             return parent::execute();
         } catch (AuthException $e) {
-            return $e->getMessage();
+            return "<p>Vous n'êtes pas connecté</p>"; 
         }
     }
 }

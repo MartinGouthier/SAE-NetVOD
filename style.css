@@ -1,3 +1,133 @@
-p{
-    background-color: red;
+/* 
+   NETVOD - Feuille de style */
+
+:root {
+    --main-color: #ffa600;
+    --accent-color: #b4a44b;
+    --background-color: #1b201b;
+    --text-color: #222;
+    --border-color: #ddd;
+    --radius: 8px;
+    --C1element: #352f23 ;
+    --transition: 0.2s ease;
+}
+
+body {
+    font-family: "Segoe UI", Roboto, sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 0 1rem;
+    line-height: 1.6;
+}
+
+/* ---------- Header ---------- */
+h1 {
+    color: var(--main-color);
+    text-align: center;
+    margin-top: 1.2rem;
+    font-size: 2rem;
+}
+
+p {
+
+    text-align: center;
+    color : var(--main-color)
+}
+
+a {
+    color : var(--main-color);
+}
+
+
+/* ---------- Séparateurs ---------- */
+hr {
+    border: none;
+    border-top: 1px solid var(--border-color);
+    margin: 1.5rem 0;
+}
+
+/* ---------- Menu principal ---------- */
+h2 {
+    color: var(--main-color);
+    border-left: 4px solid var(--accent-color);
+    padding-left: 0.5rem;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.8rem;
+}
+
+ul li {
+    background-color: var(--C1element);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    transition: var(--transition);
+}
+
+ul li:hover {
+    transform: translateY(-2px);
+}
+
+ul li a {
+    display: block;
+    padding: 0.6rem 1rem;
+    text-decoration: none;
+    color: var(--main-color);
+    font-weight: 500;
+}
+
+/* ---------- Contenu dynamique ---------- */
+div {
+    background: var(--C1element);
+    border-radius: var(--radius);
+
+    padding: 1rem;
+    margin: 1rem auto;
+    max-width: 800px;
+}
+
+label {
+    color: var(--main-color);
+
+}
+
+a[id*="Seconnecter"] {
+    display: block;
+    width: fit-content;
+    background-color: var(--main-color);
+    color: var(--text-color);
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    margin: 1rem auto; 
+    transition: background-color 0.2s ease, transform 0.15s ease;
+}
+
+a[id*="Seconnecter"]:hover {
+
+    transform: translateY(-2px);
+}
+
+/* ---------- Responsivité ---------- */
+@media (max-width: 600px) {
+    body {
+        padding: 0.5rem;
+    }
+
+    ul {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    ul li {
+        width: 90%;
+        text-align: center;
+    }
 }

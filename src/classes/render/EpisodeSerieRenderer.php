@@ -11,9 +11,15 @@ class EpisodeSerieRenderer implements Renderer {
         $this->episode = $episode;
     }
 
-    public function render(): string {
+    public function render(int $selecteur): string {
         $affichage  = "<div class='episode'>";
-        $affichage .= "<h3>Épisode " . $this->episode->__get("numero") . " : " . htmlspecialchars($this->episode->__get("titre")) . "</h3>";
+        if ($selecteur === self::COMPACT){
+            $titre = "<a href='?action=display-episode&episode={$this->episode->__get("numero")}.'><h3>Épisode " . $this->episode->__get("numero") . " : " . htmlspecialchars($this->episode->__get("titre")) . "</h3></a>";
+        }
+        else {
+            $titre = "<h3>Épisode " . $this->episode->__get("numero") . " : " . htmlspecialchars($this->episode->__get("titre")) . "</h3>";
+        }
+        $affichage .= $titre;
         $affichage .= "<p>Durée : " . $this->episode->__get("duree") . " min</p>";
         $affichage .= "<p>Résumé : " . htmlspecialchars($this->episode->__get("resume")) . "</p>";
         $affichage .= "<video controls width='400'>

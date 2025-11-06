@@ -8,14 +8,14 @@ use PDO;
 
 class NetvodRepository
 {
-    private \PDO $pdo;
+    private PDO $pdo;
     private static ?NetvodRepository $instance = null;
     private static array $config = [];
 
     private function __construct(array $conf)
     {
-        $this->pdo = new \PDO($conf['dsn'], $conf['user'], $conf['pass'],
-            [\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION]);
+        $this->pdo = new PDO($conf['dsn'], $conf['user'], $conf['pass'],
+            [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
     }
 
     public static function getInstance(): NetvodRepository
@@ -79,7 +79,7 @@ class NetvodRepository
         }
         return $tab;
     }
-
+    
     public function getSerieById(int $idSerie) : Serie {
         $requete = "SELECT * FROM serie WHERE id = ?;";
         $statm = $this->pdo->prepare($requete);
@@ -91,14 +91,22 @@ class NetvodRepository
         $statm2 = $this->pdo->prepare($requete);
         $statm2->execute([$idSerie]);
         while ($donneeEpisodes = $statm2->fetch()){
-            $episode = new EpisodeSerie($donneeEpisodes[1],$donneeEpisodes[2],$donneeEpisodes[3],$donneeEpisodes[4],$donneeEpisodes[5],$donneeEpisodes[0]);
+            $episode = new EpisodeSerie($donneeEpisodes[1],$donneeEpisodes[2],$donneeEpisodes[3],$donneeEpisodes[4],$donneeEpisodes[5],$donneeEpisodes[0],$donneeEpisodes[6]);
             $serie->ajouterEpisode($episode);
         }
         return $serie;
     }
 
+    public function getEpisodeById(int $idEpisode) : EpisodeSerie{
+        $requete = "SELECT * FROM episode WHERE id = ?";
+        $statm = $this->pdo->prepare($requete);
+        $statm->execute(["$idEpisode"]);
+        $donnee = $statm->fetch();
+        return new EpisodeSerie($donnee[1],$donnee[2],$donnee[3],$donnee[4],$donnee[5],$donnee[0],$donnee[6]);
+    }
+
     public function notePresente(int $id_user, int $id_serie) : bool{
-        $requete = "SELECT count(*) FROM notation WHERE serie_id = ? AND id_user = ?";
+        $requete = "SELECT count(*) FROM notation WHERE id_serie = ? AND id_user = ?";
         $statm = $this->pdo->prepare($requete);
         $statm->execute([$id_user,$id_serie]);
         $n = (int) $statm->fetch()[0];
@@ -112,81 +120,39 @@ class NetvodRepository
         $statm->execute([$id_serie,$id_user,$note,$commentaire]);
     }
 
-    public function addSerieEnCours(int $id_serie, int $id_user, int $etat = 0): void {
-        $requete = "SELECT COUNT(*) FROM serieEnCours WHERE id_serie = ? AND id_user = ?;";
+    public function getMoyennesSeries() : array {
+        $requete = "SELECT id_serie, avg(note) FROM notation GROUP BY id_serie ORDER BY avg(note) DESC;";
         $statm = $this->pdo->prepare($requete);
-        $statm->execute([$id_serie, $id_user]);
-        $existe = (int) $statm->fetch()[0];
-        if ($existe === 0) {
-            $requete = "INSERT INTO serieEnCours (id_serie, id_user, etatVisionnage) VALUES (?, ?, ?);";
-            $statm = $this->pdo->prepare($requete);
-            $statm->execute([$id_serie, $id_user, $etat]);
-        } else {
-
-            $requete = <<<SQL
-                            -- Nbr d'épisodes visionnés
-                            SELECT count(*) FROM episodevisionne 
-                            INNER JOIN episode ON episode.id = episodevisionne.id_episode
-                            WHERE serie_id = ? AND id_user = ?
-            SQL;
-            $statm1 = $this->pdo->prepare($requete);
-            $statm1->execute([$id_serie,$id_user]);
-            $nbrVisionne = (int) $statm1->fetch()[0];
-            $requete = <<<SQL
-                        -- Nbr d'épisodes dans la série
-                        SELECT count(*) FROM episode
-                        WHERE serie_id = ?;
-                        SQL;
-            $statm2 = $this->pdo->prepare($requete);
-            $statm2->execute([$id_serie]);
-            $nbrEpisodes = (int) $statm2->fetch()[0];
-            if ($nbrEpisodes ===  $nbrVisionne) {
-                $requete = "UPDATE serieEnCours SET etatVisionnage = 1 WHERE id_serie = ? AND id_user = ?;";
-                $statm3 = $this->pdo->prepare($requete);
-                $statm3->execute([$id_serie, $id_user]);
-            }
-        }
-    }
-
-    public function supSeriePref(int $id_user,int $id_serie) : void{
-        $requete = "DELETE FROM seriepreferees WHERE id_user = ?;";
-        $statm = $this->pdo->prepare($requete);
-        $statm->execute([$id_user]);
-    }
-
-    public function getSeriesEnCours(int $id_user): array {
-        $requete = "SELECT id_serie, etatVisionnage FROM serieEnCours WHERE id_user = ?;";
-        $statm = $this->pdo->prepare($requete);
-        $statm->execute([$id_user]);
         $tab = [];
-        while ($donnee = $statm->fetch()) {
-            $serie = $this->getSerieById($donnee['id_serie']);
-            $serie->etatVisionnage = $donnee['etatVisionnage']; // pratique pour affichage
-            $tab[] = $serie;
+        $statm->execute();
+        while ($donnee = $statm->fetch()){
+            $tab[] = $donnee;
         }
+        // Resultat sous forme [[MeilleurNote,id_serie],[2emeNote, id_serie]...]
         return $tab;
     }
 
-    public function addSeriePref(int $id_serie,int $id_user) : void{
-        $requete = "INSERT INTO seriepreferees VALUES (?,?);";
-        $statm = $this->pdo->prepare($requete);
-        $statm->execute([$id_serie,$id_user]);
-    }
-
-    public function retirerSeriePref(int $id_serie, int $id_user): void
-    {
-        $requete = "DELETE FROM seriepreferees WHERE id_serie = ? AND id_user = ?;";
-        $statm = $this->pdo->prepare($requete);
-        $statm->execute([$id_serie,$id_user]);
-    }
-
-    public function getSeriesTerminees(int $id_user) : array{
-        $requete = "SELECT id_serie FROM serieencours WHERE etatVisionnage = 1 AND id_user = ?;";
-        $statm = $this->pdo->prepare($requete);
-        $statm->execute([$id_user]);
+    public function getSeriesFiltre(int $typeFiltre, string $filtre) : array {
+        // Filtre 1 = Mot Clé
+        if ($typeFiltre === 1) {
+            //TODO Tester et verifier si LIKE fonctionne
+            $requete = "SELECT id FROM serie WHERE titre LIKE '%?%' OR descriptif LIKE '%?%';";
+            $statm = $this->pdo->prepare($requete);
+            $statm->execute([$filtre,$filtre]);
+        }else {
+            // Filtre 2 = Genre
+            if ($typeFiltre === 2)
+                $requete = "SELECT id FROM serie WHERE genre = ?;";
+            else
+                // Filtre 3 = Type de publique
+                $requete = "SELECT id FROM serie WHERE typePublic = ?;";
+            $statm = $this->pdo->prepare($requete);
+            $statm->execute([$filtre]);
+        }
         $tab = [];
         while ($donnee = $statm->fetch()){
-            $tab[] = $this->getSerieById($donnee[0]);
+            $serie = $this->getSerieById($donnee[0]);
+            $tab[] = $serie;
         }
         return $tab;
     }

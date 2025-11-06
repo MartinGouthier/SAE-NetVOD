@@ -2,8 +2,12 @@
 
 namespace iutnc\netvod\dispatch;
 
+use iutnc\netvod\action\AddCommentaireEtNote;
+use iutnc\netvod\action\DisplayEpisode;
+use iutnc\netvod\action\DisplaySerie;
 use iutnc\netvod\auth\AuthnProvider;
 use iutnc\netvod\action\DefaultAction;
+use iutnc\netvod\action\CatalogueAction;
 use iutnc\netvod\action\AddUser;
 use iutnc\netvod\action\Signin;
 
@@ -19,15 +23,26 @@ class Dispatcher {
 
     public function run(): void {
         switch ($this->action) {
+            default:
+                $a = new DefaultAction();
+                break;
             case 'add-user':
                 $a = new AddUser();
+                break;
+            case 'add-commentary-note':
+                $a = new AddCommentaireEtNote();
+                break;
+            case 'display-episode':
+                $a = new DisplayEpisode();
                 break;
              case 'sign-in':
                 $a = new Signin();
                 break;
-            
-            default:
-                $a = new DefaultAction();
+            case 'catalogue':
+                $a = new CatalogueAction();
+                break;
+            case 'display-serie':
+                $a = new DisplaySerie();
                 break;
         }
         $html = $a->execute();
