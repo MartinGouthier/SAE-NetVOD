@@ -4,6 +4,8 @@ namespace iutnc\netvod\repository;
 
 use iutnc\netvod\video\EpisodeSerie;
 use iutnc\netvod\video\Serie;
+use iutnc\netvod\exception\TokenException;
+
 use PDO;
 
 class NetvodRepository
@@ -45,29 +47,49 @@ class NetvodRepository
         $statm->execute();
         return $statm->fetch();
     }
-    public function registerNewUser(string $email,string $passwd) : String {
+    public function registerNewUser(string $email, string $passwd) : string {
+        // supprime les comptes utilisateurs non activés avec un token expiré 
+        $requete = "DELETE FROM user WHERE token_expire IS NOT NULL AND token_expire < NOW();";
+        $statm = $this->pdo->prepare($requete);
+        $statm->execute();
+        
         $requete = "INSERT INTO user (email, passwd, role, token, token_expire) values (?, ?, 0, ?, ?);";
        
-    
-        $token = bin2hex(random_bytes(32));
+        $token = bin2hex(random_bytes(12));
         $expire = date('Y-m-d H:i:s', time() + 3600); // expire dans 1h
 
-      
         $statm = $this->pdo->prepare($requete);
-        $statm->bindParam(1,$email);
-        $statm->bindParam(2,$passwd);
-        $statm->bindParam(3,$token);
-        $statm->bindParam(4,$expire);
+        $statm->bindParam(1, $email);
+        $statm->bindParam(2, $passwd);
+        $statm->bindParam(3, $token);
+        $statm->bindParam(4, $expire);
         $statm->execute();
 
-        return $token ;
+        return $token;
     }
 
-    public function activationCompte(string $email): void {
-        $requete = "UPDATE user SET role = 1 WHERE email = ?";
-        $statm = $this->pdo->prepare($requete);
-        $statm->bindParam(1,$email);
-        $statm->execute();
+    public function activationCompte(string $token): void {
+       
+        $stmt = "SELECT * FROM user WHERE token = ?";
+        $stmt = $this->pdo->prepare($stmt); 
+        $stmt->bindParam(1,$token);
+        $stmt->execute();
+        $user = $stmt->fetch();
+
+        if (!$user) {
+            throw new TokenException("Token error : token invalide ou expiré");
+        }
+
+        // Vérifier l’expiration
+        if (strtotime($user['token_expire']) < time()) {
+             throw new TokenException("Token error : token expiré");
+        }
+
+        // Activer le compte
+        $stmt = $this->pdo->prepare("UPDATE user SET active = 1, token = NULL, token_expire = NULL WHERE id = ?");   
+        $stmt->bindParam(1,$user['id']);
+        $stmt->execute();
+
     }
 
     public function verifieEmailExiste(string $email) : bool {

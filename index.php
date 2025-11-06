@@ -9,5 +9,7 @@ use iutnc\netvod\repository\NetvodRepository;
 NetvodRepository::setConfig(__DIR__ . '/config/db.ini');
 
 // Lancement du dispatcher
+
+
 $dispatcher = new Dispatcher();
 $dispatcher->run();

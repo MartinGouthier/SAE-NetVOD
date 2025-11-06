@@ -9,6 +9,7 @@ use iutnc\netvod\action\CatalogueAction;
 use iutnc\netvod\action\AddUser;
 use iutnc\netvod\action\Signin;
 
+use iutnc\netvod\action\UserActivation;
 
 class Dispatcher {
     private string $action;
@@ -33,6 +34,9 @@ class Dispatcher {
             case 'catalogue':
                 $a = new CatalogueAction();
                 break;
+            case 'user-act':
+                $a = new UserActivation();
+                break;
             case 'display-serie':
                 $a = new DisplaySerie();
                 break;
@@ -40,7 +44,7 @@ class Dispatcher {
         $html = $a->execute();
         // Si un utilisateur est connecté, on l'affiche au dessus du contenu
         if (isset($_SESSION['user'])) {
-            $html = "<p>Connecté en tant que " . AuthnProvider::getSignedInUser() . "</p>" . $html;
+            $html = "<p>Connecté en tant que <strong>" . AuthnProvider::getSignedInUser() . "</strong></p>" . $html;
         }
 
         $this->renderPage($html);

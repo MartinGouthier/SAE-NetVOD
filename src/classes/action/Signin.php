@@ -45,8 +45,7 @@ class Signin extends Action {
             $email = $_SESSION['user'];
             return <<<HTML
             <div style="text-align:center; padding:20px;">
-                <h2>Vous êtes déjà connecté</h2>
-                <p>Connecté en tant que : <strong>$email</strong></p>
+                <h2 id="sig">Vous êtes déjà connecté</h2>
                <form method="post" action="?action=sign-in">
                     <input type="hidden" name="signout" value="1">
                     <button type="submit">Se déconnecter</button>
@@ -64,10 +63,22 @@ class Signin extends Action {
             
             <label for="password">Mot de passe :</label>
             <input type="password" id="password" name="password" required>
+             <button type="button" id="togglePassword">Afficher</button>
             <br>
+
 
             <button type="submit">Connexion</button>
         </form>
+        <script>
+        document.getElementById("togglePassword").addEventListener("click", function() {
+            const passwordField = document.getElementById("password");
+            const type = passwordField.getAttribute("type") === "password" ? "text" : "password";
+            passwordField.setAttribute("type", type);
+            
+            // Change le texte du bouton selon l'état
+            this.textContent = type === "password" ? "Afficher" : "Masquer";
+        });
+        </script>
         
         HTML;
     
