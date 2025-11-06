@@ -17,7 +17,7 @@ class AddSeriePrefAction extends ActionConnecte {
         $nouvAction = new DisplaySerie();
         $user = AuthnProvider::getSignedInUser();
         $repo = NetvodRepository::getInstance();
-        $idUser = $repo -> getUserInfo($user)[0];
+        $idUser = (int) $repo -> getUserInfo($user)[0];
 
         $prefs = $repo->getSeriesPref($idUser);
         foreach ($prefs as $serie) {
