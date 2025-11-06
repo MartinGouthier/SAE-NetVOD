@@ -22,6 +22,14 @@ body {
 }
 
 /* ---------- Header ---------- */
+#logo{
+    font-size: 3em;
+}
+
+#logo img {
+    height: 1em;
+}
+
 h1 {
     color: var(--main-color);
     text-align: center;

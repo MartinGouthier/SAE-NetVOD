@@ -105,7 +105,6 @@ class NetvodRepository
         $requete = "SELECT id FROM serie;";
         $tab = [];
         $statm = $this->pdo->query($requete);
-        $statm->execute();
         while ($donnee = $statm->fetch()){
             $serie = $this->getSerieById($donnee[0]);
             $tab[] = $serie;
@@ -151,5 +150,42 @@ class NetvodRepository
         $requete = "INSERT INTO notation VALUES (?,?,?,?);";
         $statm = $this->pdo->prepare($requete);
         $statm->execute([$id_serie,$id_user,$note,$commentaire]);
+    }
+
+    public function getMoyennesSeries() : array {
+        $requete = "SELECT id_serie, avg(note) FROM notation GROUP BY id_serie ORDER BY avg(note) DESC;";
+        $statm = $this->pdo->prepare($requete);
+        $tab = [];
+        $statm->execute();
+        while ($donnee = $statm->fetch()){
+            $tab[] = $donnee;
+        }
+        // Resultat sous forme [[MeilleurNote,id_serie],[2emeNote, id_serie]...]
+        return $tab;
+    }
+
+    public function getSeriesFiltre(int $typeFiltre, string $filtre) : array {
+        // Filtre 1 = Mot Clé
+        if ($typeFiltre === 1) {
+            //TODO Tester et verifier si LIKE fonctionne
+            $requete = "SELECT id FROM serie WHERE titre LIKE '%?%' OR descriptif LIKE '%?%';";
+            $statm = $this->pdo->prepare($requete);
+            $statm->execute([$filtre,$filtre]);
+        }else {
+            // Filtre 2 = Genre
+            if ($typeFiltre === 2)
+                $requete = "SELECT id FROM serie WHERE genre = ?;";
+            else
+                // Filtre 3 = Type de publique
+                $requete = "SELECT id FROM serie WHERE typePublic = ?;";
+            $statm = $this->pdo->prepare($requete);
+            $statm->execute([$filtre]);
+        }
+        $tab = [];
+        while ($donnee = $statm->fetch()){
+            $serie = $this->getSerieById($donnee[0]);
+            $tab[] = $serie;
+        }
+        return $tab;
     }
 }
