@@ -21,7 +21,7 @@ class DisplayEpisode extends ActionConnecte {
         $_GET["episode"] = $episodeId;
 
         $renderer = new EpisodeSerieRenderer($episode);
-        $episodeDetails = $renderer->render(Renderer::COMPACT);
+        $episodeDetails = $renderer->render(Renderer::LONG);
 
         $avis = new AddCommentaireEtNote();
         $commentForm = $avis->GET();
