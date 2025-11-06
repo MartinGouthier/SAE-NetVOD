@@ -14,7 +14,7 @@ class SerieRenderer implements Renderer {
     public function render(int $selecteur=0): string {
         $affichage  = "<div class='serie'>";
         $affichage .= "<h2>" . htmlspecialchars($this->serie->__get("title")) . " (" . $this->serie->__get("annee") . ")</h2>";
-        $affichage .= "<img src='" . htmlspecialchars($this->serie->__get("cheminImage")) . "' alt='Image de la série' width='200'>";
+        $affichage .= "<img src='" . htmlspecialchars("image\\" . $this->serie->__get("cheminImage")) . "' alt='Image de la série' width='200'>";
         $affichage .= "<p><strong>Genre :</strong> " . htmlspecialchars($this->serie->__get("genre")) . "</p>";
         $affichage .= "<p><strong>Public :</strong> " . htmlspecialchars($this->serie->__get("typePublic")) . "</p>";
         $affichage .= "<p><strong>Description :</strong> " . htmlspecialchars($this->serie->__get("description")) . "</p>";
