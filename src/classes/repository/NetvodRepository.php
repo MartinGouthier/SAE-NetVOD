@@ -219,9 +219,9 @@ class NetvodRepository
     }
 
     public function supSeriePref(int $id_user,int $id_serie) : void{
-        $requete = "DELETE FROM seriepreferees WHERE id_user = ?;";
+        $requete = "DELETE FROM seriepreferees WHERE id_user = ? AND id_serie = ?;";
         $statm = $this->pdo->prepare($requete);
-        $statm->execute([$id_user]);
+        $statm->execute([$id_user,$id_serie]);
     }
 
     public function getSeriesEnCours(int $id_user): array {
