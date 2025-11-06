@@ -167,7 +167,7 @@ class NetvodRepository
         return $tab;
     }
 
-    public function updateSerieEnCours(int $id_serie, int $id_user): void {
+    private function updateSerieEnCours(int $id_serie, int $id_user): void {
         $requete = "SELECT COUNT(*) FROM serieEnCours WHERE id_serie = ? AND id_user = ?;";
         $statm = $this->pdo->prepare($requete);
         $statm->execute([$id_serie, $id_user]);
@@ -203,6 +203,21 @@ class NetvodRepository
         }
     }
 
+    public function updateEpisodeVisionne(int $id_user, int $id_episode) : void
+    {
+        $requete = "SELECT count(*) FROM episodevisionne WHERE id_user = ? AND id_episode = ?;";
+        $statm = $this->pdo->prepare($requete);
+        $statm->execute([$id_user,$id_episode]);
+        $n = (int) $statm->fetch()[0];
+        if ($n === 0){
+            $requete = "INSERT INTO episodevisionne VALUES (?,?);";
+            $statm = $this->pdo->prepare($requete);
+            $statm->execute([$id_episode,$id_user]);
+            $episode = $this->getEpisodeById($id_episode);
+            $this->updateSerieEnCours($episode->__get("id_serie"),$id_user);
+        }
+    }
+
     public function supSeriePref(int $id_user,int $id_serie) : void{
         $requete = "DELETE FROM seriepreferees WHERE id_user = ?;";
         $statm = $this->pdo->prepare($requete);
@@ -210,14 +225,12 @@ class NetvodRepository
     }
 
     public function getSeriesEnCours(int $id_user): array {
-        $requete = "SELECT id_serie, etatVisionnage FROM serieEnCours WHERE id_user = ?;";
+        $requete = "SELECT id_serie FROM serieEnCours WHERE id_user = ? AND etatVisionnage = 0;";
         $statm = $this->pdo->prepare($requete);
         $statm->execute([$id_user]);
         $tab = [];
         while ($donnee = $statm->fetch()) {
-            $serie = $this->getSerieById($donnee['id_serie']);
-            $serie->etatVisionnage = $donnee['etatVisionnage'];
-            $tab[] = $serie;
+            $tab[] = $this->getSerieById($donnee[0]);
         }
         return $tab;
     }

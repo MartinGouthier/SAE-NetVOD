@@ -1,6 +1,7 @@
 <?php
 namespace iutnc\netvod\render;
 
+use iutnc\netvod\repository\NetvodRepository;
 use iutnc\netvod\video\EpisodeSerie;
 
 class EpisodeSerieRenderer implements Renderer {
@@ -27,13 +28,12 @@ class EpisodeSerieRenderer implements Renderer {
                           <source src='" ."video\\" . htmlspecialchars($this->episode->__get("cheminFichier")) . "' type='video/mp4'>
                           Votre navigateur ne supporte pas la lecture vidéo.
                        </video>";
-            $affichage .= "</div>";
         } else {
             $pdo = NetvodRepository::getInstance();
             $serie = $pdo->getSerieById($this->episode->__get("id_serie"));
             $affichage .= "<a href=?action=display-episode&episode={$this->episode->__get("numero")} ><img src='". "image\\" . htmlspecialchars($serie->__get("cheminImage")) . "' alt='Image de la série' width='200'></a>";
-            $affichage .= "</div>";
         }
+        $affichage .= "</div>";
 
         return $affichage;
     }
