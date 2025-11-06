@@ -1,7 +1,9 @@
 <?php
 namespace iutnc\netvod\render;
 
+use iutnc\netvod\repository\NetvodRepository;
 use iutnc\netvod\video\EpisodeSerie;
+
 
 class EpisodeSerieRenderer implements Renderer {
 
@@ -14,7 +16,7 @@ class EpisodeSerieRenderer implements Renderer {
     public function render(int $selecteur): string {
         $affichage  = "<div class='episode'>";
         if ($selecteur === self::COMPACT){
-            $titre = "<a href='?action=display-episode&episode={$this->episode->__get("numero")}.'><h3>Épisode " . $this->episode->__get("numero") . " : " . htmlspecialchars($this->episode->__get("titre")) . "</h3></a>";
+            $titre = "<a href='?action=display-episode&episode={$this->episode->__get("id")}.'><h3>Épisode " . $this->episode->__get("numero") . " : " . htmlspecialchars($this->episode->__get("titre")) . "</h3></a>";
         }
         else {
             $titre = "<h3>Épisode " . $this->episode->__get("numero") . " : " . htmlspecialchars($this->episode->__get("titre")) . "</h3>";
