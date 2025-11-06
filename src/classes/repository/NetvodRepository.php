@@ -245,4 +245,11 @@ class NetvodRepository
         }
         return $tab;
     }
+
+    public function getMoyenne(int $id_serie) : array|bool{
+        $requete = "SELECT avg(note), count(note) FROM notation WHERE id_serie = ?;";
+        $statm = $this->pdo->prepare($requete);
+        $statm->execute([$id_serie]);
+        return $statm->fetch();
+    }
 }
