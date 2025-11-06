@@ -1,4 +1,4 @@
-    <?php
+<?php
 
 namespace iutnc\netvod\action;
 
@@ -15,8 +15,6 @@ class AddAction extends ActionConnecte {
             </form>
         END;
     }
-    public function execute() : string {
-
     public function POST(): string {
         $idSerie = intval($_POST['id_serie']);
         $user = AuthnProvider::getSignedInUser();
@@ -37,3 +35,4 @@ class AddAction extends ActionConnecte {
         END;
     }
 }
+

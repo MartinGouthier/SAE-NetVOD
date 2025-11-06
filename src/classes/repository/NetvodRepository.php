@@ -120,7 +120,6 @@ class NetvodRepository
         $statm->execute([$id_serie,$id_user,$note,$commentaire]);
     }
 
-    public function addSerieEnCours(int $id_serie, int $id_user, int $etat = 0): void {
     public function getMoyennesSeries() : array {
         $requete = "SELECT id_serie, avg(note) FROM notation GROUP BY id_serie ORDER BY avg(note) DESC;";
         $statm = $this->pdo->prepare($requete);
@@ -156,36 +155,6 @@ class NetvodRepository
             $tab[] = $serie;
         }
         return $tab;
-    }
-
-    public function addSeriePref(int $id_serie,int $id_user) : void{
-        $requete = "INSERT INTO seriepreferees VALUES (?,?);";
-        $statm = $this->pdo->prepare($requete);
-        $statm->execute([$id_serie,$id_user]);
-    }
-
-    public function getSeriesPref(int $id_user) : array{
-        $requete = "SELECT id_serie FROM seriepreferees WHERE id_user = ?;";
-        $statm = $this->pdo->prepare($requete);
-        $statm->execute([$id_user]);
-        $tab = [];
-        while ($donnee = $statm->fetch()){
-            $tab[] = $this->getSerieById($donnee[0]);
-        }
-        return $tab;
-    }
-
-    public function addSeriePref(int $id_serie,int $id_user) : void{
-        $requete = "INSERT INTO seriepreferees VALUES (?,?);";
-        $statm = $this->pdo->prepare($requete);
-        $statm->execute([$id_serie,$id_user]);
-    }
-
-    public function retirerSeriePref(int $id_serie, int $id_user): void
-    {
-        $requete = "DELETE FROM seriepreferees WHERE id_serie = ? AND id_user = ?;";
-        $statm = $this->pdo->prepare($requete);
-        $statm->execute([$id_serie,$id_user]);
     }
 
     public function getSeriesPref(int $id_user) : array{
@@ -232,9 +201,6 @@ class NetvodRepository
                 $statm3 = $this->pdo->prepare($requete);
                 $statm3->execute([$id_serie, $id_user]);
             }
-            $requete = "UPDATE serieEnCours SET etatVisionnage = ? WHERE id_serie = ? AND id_user = ?;";
-            $statm = $this->pdo->prepare($requete);
-            $statm->execute([$etat, $id_serie, $id_user]);
         }
     }
 
