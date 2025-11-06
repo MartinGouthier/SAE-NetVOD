@@ -157,6 +157,12 @@ class NetvodRepository
         }
     }
 
+    public function supSeriePref(int $id_user,int $id_serie) : void{
+        $requete = "DELETE FROM seriepreferees WHERE id_user = ?;";
+        $statm = $this->pdo->prepare($requete);
+        $statm->execute([$id_user]);
+    }
+
     public function getSeriesEnCours(int $id_user): array {
         $requete = "SELECT id_serie, etatVisionnage FROM serieEnCours WHERE id_user = ?;";
         $statm = $this->pdo->prepare($requete);
