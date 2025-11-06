@@ -1,6 +1,7 @@
 <?php
 namespace iutnc\netvod\action;
 
+use iutnc\netvod\auth\AuthnProvider;
 use iutnc\netvod\render\EpisodeSerieRenderer;
 use iutnc\netvod\render\Renderer;
 use iutnc\netvod\repository\NetvodRepository;
@@ -22,6 +23,10 @@ class DisplayEpisode extends ActionConnecte {
 
         $renderer = new EpisodeSerieRenderer($episode);
         $episodeDetails = $renderer->render(Renderer::LONG);
+        $user = AuthnProvider::getSignedInUser();
+        $id_user = (int) $repo->getUserInfo($user)[2];
+        echo($id_user);
+        $repo->updateEpisodeVisionne($id_user,$episodeId);
 
         $avis = new AddCommentaireEtNote();
         $commentForm = $avis->GET();
