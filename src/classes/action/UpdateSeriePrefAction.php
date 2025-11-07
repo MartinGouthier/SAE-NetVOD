@@ -14,21 +14,16 @@ class UpdateSeriePrefAction extends ActionConnecte {
     }
 
     public function POST(): string {
-
+        $nouvAction = new DefaultAction();
         $idSerie = ($_POST['id_serie']);
-        echo($idSerie);
         $typeModif = $_POST['typeModif'];
         $repo = NetvodRepository::getInstance();
         $idUser = $repo->getUserInfo(AuthnProvider::getSignedInUser())[2];
 
         if ($typeModif === "ajout") {
-            $_GET["id_serie"] = $idSerie;
             $repo->addSeriePref($idSerie,$idUser);
-            $nouvAction = new DisplaySerie();
-
         } else {
             $repo->retirerSeriePref($idSerie, $idUser);
-            $nouvAction = new DisplaySeriePref();
         }
         return $nouvAction->GET();
     }

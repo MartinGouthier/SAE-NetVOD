@@ -36,7 +36,7 @@ class SerieRenderer implements Renderer {
                          <form action=?action=update-series-pref method=POST>
                          <input type = "hidden" name="id_serie" value={$this->serie->__GET("id")}>
                          <input type = "hidden" name="typeModif" value = "retrait">
-                         <input type="submit" value = "Retirer des favoris {$this->serie->__GET("id")}">
+                         <input type="submit" value = "Retirer des favoris">
                         </form>
             HTML;
         }
