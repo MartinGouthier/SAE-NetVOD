@@ -1,5 +1,7 @@
 <?php
 namespace iutnc\netvod\video;
+use Exception;
+
 class Serie {
     private string $title;
     private string $description;
@@ -20,7 +22,6 @@ class Serie {
                                 string $genre,
                                 string $typePublic,
                                 int $id,
-                                array  $episodes = [],
                                 float $moyenne) {
         $this->title = $title;
         $this->description = $description;
@@ -28,7 +29,6 @@ class Serie {
         $this->annee = $annee;
         $this->genre = $genre;
         $this->typePublic = $typePublic;
-        $this->episodes = $episodes;
         $this->id = $id;
         $this->moyenne = $moyenne;
     }
@@ -54,6 +54,10 @@ class Serie {
         }
 
         throw new Exception("$at: invalid property");
+    }
+
+    public function ajouterEpisode(EpisodeSerie $episode) : void{
+        $this->episodes[] = $episode;
     }
 
     private function chargerEpisodes(): void {
