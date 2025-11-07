@@ -85,7 +85,15 @@ class NetvodRepository
         $statm = $this->pdo->prepare($requete);
         $statm->execute([$idSerie]);
         $donnee = $statm->fetch();
-        $serie = new Serie($donnee[1],$donnee[2],$donnee[3],$donnee[4],$donnee[6],$donnee[7],$donnee[0]);
+
+        $moyenneres = $this->getMoyenne($idSerie);
+        if ($moyenneres === false || (int)$moyenneres[1] === 0 || $moyenneres[0] === null) {
+            $moyenne = "Aucune note";
+        }
+        else {
+            $moyenne = (float)$moyenneres[0];
+        }
+        $serie = new Serie($donnee[1],$donnee[2],$donnee[3],$donnee[4],$donnee[6],$donnee[7],$donnee[0], [], $moyenne);
 
         $requete = "SELECT * FROM episode WHERE serie_id = ?;";
         $statm2 = $this->pdo->prepare($requete);
@@ -96,6 +104,39 @@ class NetvodRepository
         }
         return $serie;
     }
+    public function getEpisodesBySerie(int $idSerie): array {
+        $requete = "SELECT * FROM episode WHERE serie_id = ? ORDER BY numero ASC;";
+        $statm = $this->pdo->prepare($requete);
+        $statm->execute([$idSerie]);
+
+        $episodes = [];
+        while ($donnee = $statm->fetch()) {
+            $episode = new EpisodeSerie(
+                $donnee['numero'],
+                $donnee['titre'],
+                $donnee['resume'],
+                $donnee['duree'],
+                $donnee['file'],
+                $donnee['id'],
+                $donnee['serie_id']
+            );
+            $episodes[] = $episode;
+        }
+        return $episodes;
+    }
+
+    public function getCommentairesBySerie(int $idSerie): array {
+        $requete = "SELECT id_user, note, commentaire FROM notation WHERE id_serie = ?";
+        $statm = $this->pdo->prepare($requete);
+        $statm->execute([$idSerie]);
+
+        $commentaires = [];
+        while ($donnee = $statm->fetch()) {
+            $commentaires[] = [$donnee['id_user'],$donnee['note'],$donnee['commentaire']];
+        }
+        return $commentaires;
+    }
+
 
     public function getEpisodeById(int $idEpisode) : EpisodeSerie{
         $requete = "SELECT * FROM episode WHERE id = ?";
