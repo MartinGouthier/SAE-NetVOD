@@ -93,14 +93,11 @@ class NetvodRepository
         $donnee = $statm->fetch();
 
         $moyenneres = $this->getMoyenne($idSerie);
-        if ($moyenneres === false || (int)$moyenneres[1] === 0 || $moyenneres[0] === null) {
-            $moyenne = "Aucune note";
-        }
-        else {
+        $moyenne = null;
+        if ((int)$moyenneres[1] > 0) {
             $moyenne = (float)$moyenneres[0];
         }
-        $serie = new Serie($donnee[1],$donnee[2],$donnee[3],$donnee[4],$donnee[6],$donnee[7],$donnee[0], $moyenne);
-        return $serie;
+        return new Serie($donnee[1],$donnee[2],$donnee[3],$donnee[4],$donnee[5],$donnee[6],$donnee[7],$donnee[0], $moyenne);
     }
     public function getEpisodesBySerie(int $idSerie): array {
         $requete = "SELECT * FROM episode WHERE serie_id = ? ORDER BY numero ASC;";
@@ -295,8 +292,8 @@ class NetvodRepository
         return $tab;
     }
 
-    public function getMoyenne(int $id_serie) : array|bool{
-        $requete = "SELECT avg(note), count(note) FROM notation WHERE id_serie = ?;";
+    public function getMoyenne(int $id_serie) : array{
+        $requete = "SELECT round(avg(note),2), count(note) FROM notation WHERE id_serie = ?;";
         $statm = $this->pdo->prepare($requete);
         $statm->execute([$id_serie]);
         return $statm->fetch();

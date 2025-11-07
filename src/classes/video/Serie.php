@@ -1,6 +1,7 @@
 <?php
 namespace iutnc\netvod\video;
 use Exception;
+use iutnc\netvod\repository\NetvodRepository;
 
 class Serie {
     private string $title;
@@ -13,16 +14,19 @@ class Serie {
     private array $commentaires = [];
     private int $id;
 
-    private float $moyenne;
+    private string $dateAjout;
+
+    private ?float $moyenne;
 
     public function __construct(string $title,
                                 string $description,
                                 string $cheminImage,
                                 int $annee ,
+                                string $dateAjout,
                                 string $genre,
                                 string $typePublic,
                                 int $id,
-                                float $moyenne) {
+                                ?float $moyenne) {
         $this->title = $title;
         $this->description = $description;
         $this->cheminImage = $cheminImage;
@@ -31,6 +35,7 @@ class Serie {
         $this->typePublic = $typePublic;
         $this->id = $id;
         $this->moyenne = $moyenne;
+        $this->dateAjout = $dateAjout;
     }
 
 

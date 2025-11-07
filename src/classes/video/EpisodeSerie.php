@@ -1,5 +1,7 @@
 <?php
 namespace iutnc\netvod\video;
+use Exception;
+
 class EpisodeSerie {
     private int $numero;
     private string $titre;
@@ -22,6 +24,6 @@ class EpisodeSerie {
         if (property_exists ($this, $at)) {
             return $this->$at;
         }
-        throw new \Exception ("$at: invalid property");
+        throw new Exception ("$at: invalid property");
     }
 }
