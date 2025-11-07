@@ -2,6 +2,7 @@
 
 namespace iutnc\netvod\repository;
 
+use iutnc\netvod\exception\DatabaseConnectionException;
 use iutnc\netvod\video\EpisodeSerie;
 use iutnc\netvod\video\Serie;
 use PDO;
@@ -30,11 +31,16 @@ class NetvodRepository
     {
         $conf = parse_ini_file($file);
         if ($conf === false) {
-            throw new \Exception("Error reading configuration file");
+            throw new DatabaseConnectionException("Erreur : impossible de lire le fichier de configuration");
         }
-
         $dsn = "{$conf['driver']}:host={$conf['host']};dbname={$conf['database']}";
         self::$config = ['dsn' => $dsn, 'user' => $conf['username'], 'pass' => $conf['password']];
+        try {
+            $connexionBdd = new NetvodRepository(self::$config);
+        } catch (\PDOException) {
+            throw new DatabaseConnectionException("Erreur : connexion à la base de données refusée");
+        }
+
     }
 
     public function getUserInfo(string $email) : array
