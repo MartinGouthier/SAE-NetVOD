@@ -6,6 +6,7 @@ use iutnc\netvod\action\AddCommentaireEtNote;
 use iutnc\netvod\action\AddSeriePrefAction;
 use iutnc\netvod\action\DisplayEpisode;
 use iutnc\netvod\action\DisplaySerie;
+use iutnc\netvod\action\DisplaySeriePref;
 use iutnc\netvod\auth\AuthnProvider;
 use iutnc\netvod\action\DefaultAction;
 use iutnc\netvod\action\CatalogueAction;
