@@ -275,8 +275,10 @@ class NetvodRepository
         $statm->execute([$id_user]);
         $tab = [];
         while ($donnee = $statm->fetch()) {
-            $serie = $this->getSerieById($donnee['id_serie']);
-            $tab[] = $serie;
+            if (intval($donnee[1]) === 0) {
+                $serie = $this->getSerieById($donnee['id_serie']);
+                $tab[] = $serie;
+            }
         }
         return $tab;
     }
@@ -297,5 +299,30 @@ class NetvodRepository
         $statm = $this->pdo->prepare($requete);
         $statm->execute([$id_serie]);
         return $statm->fetch();
+    }
+
+    public function getProchainEpisodeEnCours(int $id_user, int $id_serie) : EpisodeSerie|false {
+        $requete = <<<SQL
+                    SELECT max(numero) FROM episodevisionne
+                    INNER JOIN episode ON episode.id = episodevisionne.id_episode
+                    WHERE id_user = ? AND serie_id = ?;
+                    SQL;
+        $statm = $this->pdo->prepare($requete);
+        $statm->execute([$id_user,$id_serie]);
+        $numNouveauEpisode = intval($statm->fetch()[0]) + 1;
+        $requete = "SELECT id FROM episode WHERE serie_id = ? AND numero = $numNouveauEpisode";
+        $statm = $this->pdo->prepare($requete);
+        $statm->execute([$id_serie]);
+        $res = $statm->fetch();
+        if (!$res)
+            return false;
+        return $this->getEpisodeById(intval($res[0]));
+    }
+
+    public function estEpisodeVisionne(int $id_user, int $id_episode) : bool {
+        $requete = "SELECT count(*) FROM episodevisionne WHERE id_user = ? AND id_episode = ?;";
+        $statm = $this->pdo->prepare($requete);
+        $statm->execute([$id_user,$id_episode]);
+        return (intval($statm->fetch()[0] === 1));
     }
 }

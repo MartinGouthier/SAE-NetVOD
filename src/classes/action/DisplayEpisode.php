@@ -22,11 +22,11 @@ class DisplayEpisode extends ActionConnecte {
         $_GET["episode"] = $episodeId;
 
         $renderer = new EpisodeSerieRenderer($episode);
-        $episodeDetails = $renderer->render(Renderer::LONG);
         $user = AuthnProvider::getSignedInUser();
         $id_user = (int) $repo->getUserInfo($user)[2];
-        echo($id_user);
         $repo->updateEpisodeVisionne($id_user,$episodeId);
+        $episodeDetails = $renderer->render(Renderer::LONG);
+
 
         $avis = new AddCommentaireEtNote();
         $commentForm = $avis->GET();
