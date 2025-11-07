@@ -48,6 +48,9 @@ class Dispatcher {
             case 'add-series-pref':
                 $a =new AddSeriePrefAction();
                 break;
+            case 'display-serie-pref':
+                $a = new DisplaySeriePref();
+                break;
         }
         $html = $a->execute();
         // Si un utilisateur est connecté, on l'affiche au dessus du contenu
