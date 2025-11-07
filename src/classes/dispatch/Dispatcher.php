@@ -3,7 +3,7 @@
 namespace iutnc\netvod\dispatch;
 
 use iutnc\netvod\action\AddCommentaireEtNote;
-use iutnc\netvod\action\AddSeriePrefAction;
+use iutnc\netvod\action\UpdateSeriePrefAction;
 use iutnc\netvod\action\DisplayEpisode;
 use iutnc\netvod\action\DisplaySerie;
 use iutnc\netvod\action\DisplaySeriePref;
@@ -46,10 +46,10 @@ class Dispatcher {
             case 'display-serie':
                 $a = new DisplaySerie();
                 break;
-            case 'add-series-pref':
-                $a =new AddSeriePrefAction();
+            case 'update-series-pref':
+                $a =new UpdateSeriePrefAction();
                 break;
-            case 'display-serie-pref':
+            case 'display-series-pref':
                 $a = new DisplaySeriePref();
                 break;
         }
@@ -90,8 +90,7 @@ class Dispatcher {
                     <ul>
                         <li><a href="?action=default">Accueil</a></li>
                         <li><a href="?action=catalogue">Catalogue</a></li>
-                        <li><a href="?action=preference">Mes préférences</a></li>
-                        <li><a href="?action=viewed">Mes visionages</a></li>
+                        <li><a href="?action=display-series-pref">Mes préférences</a></li>
                     </ul>
             
                     <hr>

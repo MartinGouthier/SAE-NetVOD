@@ -167,9 +167,11 @@ class NetvodRepository
         return $tab;
     }
     public function addSeriePref(int $id_serie,int $id_user) : void{
-        $requete = "INSERT INTO seriepreferees VALUES (?,?);";
-        $statm = $this->pdo->prepare($requete);
-        $statm->execute([$id_serie,$id_user]);
+        try {
+            $requete = "INSERT INTO seriepreferees VALUES (?,?);";
+            $statm = $this->pdo->prepare($requete);
+            $statm->execute([$id_serie, $id_user]);
+        } catch (\PDOException){}
     }
 
     public function retirerSeriePref(int $id_serie, int $id_user): void

@@ -2,6 +2,7 @@
 
 namespace iutnc\netvod\action;
 
+use iutnc\netvod\auth\AuthnProvider;
 use iutnc\netvod\render\Renderer;
 use iutnc\netvod\render\SerieRenderer;
 use iutnc\netvod\repository\NetvodRepository;
@@ -9,15 +10,13 @@ use iutnc\netvod\repository\NetvodRepository;
 class DisplaySeriePref extends ActionConnecte {
     public function GET(): string
     {
-        if (!(isset($_GET["id_serie"])&&filter_var($_GET["id_serie"],FILTER_SANITIZE_NUMBER_INT))){
-            $action = new CatalogueAction();
-            return $action->GET();
-        } else {
-            $id_serie = $_GET["id_serie"];
-            $bdd = NetvodRepository::getInstance();
-            $serie = $bdd->getSeriesPref($id_serie);
+        $html = "<h1>Mes séries préférées</h1>";
+        $bdd = NetvodRepository::getInstance();
+        $id_user = $bdd->getUserInfo(AuthnProvider::getSignedInUser())[2];
+        $series = $bdd->getSeriesPref($id_user);
+        foreach ($series as $serie){
             $renderer = new SerieRenderer($serie);
-            $html = $renderer->render(Renderer::LONG);
+            $html .= $renderer->render(Renderer::SERIEPREF);
         }
         return $html;
     }

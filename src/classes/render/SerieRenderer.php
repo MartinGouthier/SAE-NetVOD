@@ -22,11 +22,24 @@ class SerieRenderer implements Renderer {
         $affichage .= "<p><strong>Public :</strong> " . htmlspecialchars($this->serie->__get("typePublic")) . "</p>";
         $affichage .= "<p><strong>Description :</strong> " . htmlspecialchars($this->serie->__get("description")) . "</p>";
 
-        $affichage .= <<<HTML
-                     <form action=?action=add-series-pref method=post>
-                       <input type="submit" value = "Ajouter aux favoris">
-                        <input type = "hidden" name="id_serie" value={$this->serie->__get("id")}>
-        HTML;
+        if ($selecteur === Renderer::LONG || $selecteur === Renderer::COMPACT) {
+            $affichage .= <<<HTML
+                         <form action=?action=update-series-pref method=POST>
+                         <input type = "hidden" name="id_serie" value={$this->serie->__GET("id")}>
+                         <input type = "hidden" name="typeModif" value = "ajout">
+                         <input type="submit" value = "Ajouter aux favoris">
+                        </form>
+            HTML;
+        }
+        elseif ($selecteur === Renderer::SERIEPREF){
+            $affichage .= <<<HTML
+                         <form action=?action=update-series-pref method=POST>
+                         <input type = "hidden" name="id_serie" value={$this->serie->__GET("id")}>
+                         <input type = "hidden" name="typeModif" value = "retrait">
+                         <input type="submit" value = "Retirer des favoris {$this->serie->__GET("id")}">
+                        </form>
+            HTML;
+        }
         // Rendu des épisodes
         if ($selecteur === Renderer::LONG) {
             $episodes = $this->serie->__get("episodes");
