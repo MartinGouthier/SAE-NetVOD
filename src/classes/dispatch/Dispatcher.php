@@ -3,6 +3,7 @@
 namespace iutnc\netvod\dispatch;
 
 use iutnc\netvod\action\AddCommentaireEtNote;
+use iutnc\netvod\action\UpdateSeriePrefAction;
 use iutnc\netvod\action\DisplayEpisode;
 use iutnc\netvod\action\DisplaySerie;
 use iutnc\netvod\auth\AuthnProvider;
@@ -44,6 +45,9 @@ class Dispatcher {
             case 'display-serie':
                 $a = new DisplaySerie();
                 break;
+            case 'update-series-pref':
+                $a =new UpdateSeriePrefAction();
+                break;
         }
         $html = $a->execute();
         // Si un utilisateur est connecté, on l'affiche au dessus du contenu
@@ -54,7 +58,6 @@ class Dispatcher {
         $this->renderPage($html);
     }
 
-    //TODO A MODIFIER POUR ADAPTER LES ACTIONS
     private function renderPage(string $html): void {
         $pageComplete = <<<END
             <!DOCTYPE html>
@@ -82,8 +85,6 @@ class Dispatcher {
                     <ul>
                         <li><a href="?action=default">Accueil</a></li>
                         <li><a href="?action=catalogue">Catalogue</a></li>
-                        <li><a href="?action=preference">Mes préférences</a></li>
-                        <li><a href="?action=viewed">Mes visionages</a></li>
                     </ul>
             
                     <hr>

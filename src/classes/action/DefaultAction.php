@@ -20,11 +20,17 @@ class DefaultAction extends Action {
             $repo = NetvodRepository::getInstance();
             $id_user = (int) $repo->getUserInfo(AuthnProvider::getSignedInUser())[2];
 
-            $html .= "<br><h2>Vos séries récentes :</h2>";
+            $html .= "<br><h2>Mes séries récentes :</h2>";
             $listeSeriesRecentes = $repo->getSeriesEnCours($id_user);
             foreach ($listeSeriesRecentes as $serie){
                 $renderer = new SerieRenderer($serie);
                 $html .= $renderer->render(Renderer::COMPACT);
+            }
+            $html .= "<br><h2>Mes séries préférées</h2>";
+            $listeSeriesPref = $repo->getSeriesPref($id_user);
+            foreach ($listeSeriesPref as $serie){
+                $renderer = new SerieRenderer($serie);
+                $html .= $renderer->render(Renderer::SERIEPREF);
             }
         } catch (AuthException){}
         return $html;

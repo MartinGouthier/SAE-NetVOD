@@ -37,7 +37,7 @@ class NetvodRepository
         self::$config = ['dsn' => $dsn, 'user' => $conf['username'], 'pass' => $conf['password']];
     }
 
-    public function getUserInfo(string $email) : array|bool
+    public function getUserInfo(string $email) : array
     {
         $requete = "SELECT passwd, role, id FROM user WHERE email = ?;";
         $statm = $this->pdo->prepare($requete);
@@ -79,7 +79,7 @@ class NetvodRepository
         }
         return $tab;
     }
-
+    
     public function getSerieById(int $idSerie) : Serie {
         $requete = "SELECT * FROM serie WHERE id = ?;";
         $statm = $this->pdo->prepare($requete);
@@ -166,8 +166,23 @@ class NetvodRepository
         }
         return $tab;
     }
+    public function addSeriePref(int $id_serie,int $id_user) : void{
+        try {
+            $requete = "INSERT INTO seriepreferees VALUES (?,?);";
+            $statm = $this->pdo->prepare($requete);
+            $statm->execute([$id_serie, $id_user]);
+        } catch (\PDOException){}
+    }
 
-    private function updateSerieEnCours(int $id_serie, int $id_user): void {
+    public function retirerSeriePref(int $id_serie, int $id_user): void
+    {
+        $requete = "DELETE FROM seriepreferees WHERE id_serie = ? AND id_user = ?;";
+        $statm = $this->pdo->prepare($requete);
+        $statm->execute([$id_serie,$id_user]);
+    }
+
+
+    public function updateSerieEnCours(int $id_serie, int $id_user): void {
         $requete = "SELECT COUNT(*) FROM serieEnCours WHERE id_serie = ? AND id_user = ?;";
         $statm = $this->pdo->prepare($requete);
         $statm->execute([$id_serie, $id_user]);
@@ -218,34 +233,16 @@ class NetvodRepository
         }
     }
 
-    public function supSeriePref(int $id_user,int $id_serie) : void{
-        $requete = "DELETE FROM seriepreferees WHERE id_user = ? AND id_serie = ?;";
-        $statm = $this->pdo->prepare($requete);
-        $statm->execute([$id_user,$id_serie]);
-    }
-
     public function getSeriesEnCours(int $id_user): array {
-        $requete = "SELECT id_serie FROM serieEnCours WHERE id_user = ? AND etatVisionnage = 0;";
+        $requete = "SELECT id_serie, etatVisionnage FROM serieEnCours WHERE id_user = ?;";
         $statm = $this->pdo->prepare($requete);
         $statm->execute([$id_user]);
         $tab = [];
         while ($donnee = $statm->fetch()) {
-            $tab[] = $this->getSerieById($donnee[0]);
+            $serie = $this->getSerieById($donnee['id_serie']);
+            $tab[] = $serie;
         }
         return $tab;
-    }
-
-    public function addSeriePref(int $id_serie,int $id_user) : void{
-        $requete = "INSERT INTO seriepreferees VALUES (?,?);";
-        $statm = $this->pdo->prepare($requete);
-        $statm->execute([$id_serie,$id_user]);
-    }
-
-    public function retirerSeriePref(int $id_serie, int $id_user): void
-    {
-        $requete = "DELETE FROM seriepreferees WHERE id_serie = ? AND id_user = ?;";
-        $statm = $this->pdo->prepare($requete);
-        $statm->execute([$id_serie,$id_user]);
     }
 
     public function getSeriesTerminees(int $id_user) : array{
