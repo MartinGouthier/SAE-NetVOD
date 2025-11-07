@@ -25,9 +25,7 @@ class AddUser extends Action {
         $activationUrl = "http://localhost/td/SAE-NetVOD/?action=user-act&token=" . urlencode($token);
         
         $html = "<p>Voici votre lien d’activation :</p><p><a href='$activationUrl'>$activationUrl</a></p>";
-        
-        $email = $_POST['email'];
-        
+    
             
         } catch (AuthException $e) {
 

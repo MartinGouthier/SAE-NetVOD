@@ -44,5 +44,20 @@ class AuthnProvider
             throw new AuthException("Auth error : not signed in");
         return $_SESSION['user'];
     }
+    
+
+    //vérification avant de crée le token pour reset le password à un email donné
+    public static function passWordToken($email) : String {
+        if (! filter_var($email, FILTER_VALIDATE_EMAIL))
+            throw new AuthException("error : Email incorrect");
+        $bdd = NetvodRepository::getInstance();
+        if ($bdd->verifieEmailExiste($email)){
+            $token = $bdd->registerpassWordToken($email);
+            return $token ;
+        }
+        
+         throw new AuthException("Erreur : Email non enregistré");
+    }
+
 
 }
