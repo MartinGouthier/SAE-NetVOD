@@ -48,6 +48,9 @@ class Dispatcher {
             case 'update-series-pref':
                 $a =new UpdateSeriePrefAction();
                 break;
+            case 'display-commentaires':
+                $a =new UpdateSeriePrefAction();
+                break;
         }
         $html = $a->execute();
         // Si un utilisateur est connecté, on l'affiche au dessus du contenu

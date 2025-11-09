@@ -21,10 +21,13 @@ class SerieRenderer implements Renderer {
         if ($selecteur === self::COMMENTAIRES) {
             // si le mode est "commentaires", on affiche juste ça
             $affichage .= $this->renderCommentaires();
-        } else {
+        }
+        else {
             // sinon, on assemble les différents blocs de la série
             $affichage .= $this->renderImage($selecteur);
-            $affichage .= $this->renderInfos();
+            if ($selecteur === self::LONG) {
+                $affichage .= $this->renderInfos();
+            }
             $affichage .= $this->renderFavorisForm($selecteur);
 
             // on ajoute les épisodes uniquement en mode LONG
@@ -78,13 +81,39 @@ class SerieRenderer implements Renderer {
 
     // Informations générales sur la série : genre, public, description
     private function renderInfos(): string {
+        $moyenneNotes = htmlspecialchars($this->serie->__get("moyenne"));
         $genre = htmlspecialchars($this->serie->__get("genre"));
         $public = htmlspecialchars($this->serie->__get("typePublic"));
         $desc = htmlspecialchars($this->serie->__get("description"));
+        $idSerie = $this->serie->__get("id");
 
-        return "<p><strong>Genre</strong> {$genre}</p>
-                <p><strong>Public</strong> {$public}</p>
-                <p><strong>Description</strong> {$desc}</p>";
+        // informations liées au commentaires de la série
+        $commentaires = $this->serie->__get("commentaires");
+        $nbCommentaires = count($commentaires);
+        if ($nbCommentaires === 0) {
+            $nbCommentairesTexte = "Aucun commentaire";
+        } elseif ($nbCommentaires === 1) {
+            $nbCommentairesTexte = "1 commentaire";
+        } else {
+            $nbCommentairesTexte = $nbCommentaires . " commentaires";
+        }
+
+        if ($moyenneNotes !== null) {
+            $moyenneHtml = "<p><strong>Moyenne :</strong> {$moyenneNotes}</p>";
+        }
+        else {
+            $moyenneHtml = "<p><strong>Moyenne :</strong> Pas encore de note</p>";
+        }
+
+        $infosHtml = $moyenneHtml .
+            "<p><strong>Genre :</strong> {$genre}</p>" .
+            "<p><strong>Public :</strong> {$public}</p>" .
+            "<p><strong>Description :</strong> {$desc}</p>".
+            "<p><strong>Commentaires :</strong> {$nbCommentairesTexte}</p>";
+
+        $lienCommentaires = "<p><a href='?action=display-commentaires&id_serie={$idSerie}'>Voir tous les commentaires</a></p>";
+
+        return $infosHtml . $lienCommentaires;
     }
 
     // Formulaire pour ajouter ou retirer la série des favoris
@@ -100,7 +129,8 @@ class SerieRenderer implements Renderer {
                     <input type="submit" value="Ajouter aux favoris">
                 </form>
             HTML;
-        } elseif ($selecteur === Renderer::SERIEPREF) {
+        }
+        elseif ($selecteur === Renderer::SERIEPREF) {
             // bouton "Retirer des favoris"
             return <<<HTML
                 <form action=?action=update-series-pref method=POST>
@@ -135,14 +165,15 @@ class SerieRenderer implements Renderer {
     // Affiche uniquement les commentaires
     private function renderCommentaires(): string {
         $html = "<h2>Commentaires</h2>";
-        $comments = $this->serie->__get("commentaires") ?? [];
+        $comments = $this->serie->__get("commentaires");
 
         if (!empty($comments)) {
             // chaque commentaire avec l'utilisateur
             foreach ($comments as $c) {
                 $html .= "<p><strong>{$c['user']}</strong> {$c['texte']}</p>";
             }
-        } else {
+        }
+        else {
             // pas de commentaire pour cette série
             $html .= "<p>Aucun commentaire pour cette série</p>";
         }

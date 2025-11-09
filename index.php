@@ -9,9 +9,11 @@ use iutnc\netvod\repository\NetvodRepository;
 
 try {
     NetvodRepository::setConfig(__DIR__ . '/config/db.ini');
+    // Lancement du dispatcher
     $dispatcher = new Dispatcher();
     $dispatcher->run();
-} catch (DatabaseConnectionException $e) {
+}
+catch (DatabaseConnectionException $e) {
     $pageComplete = <<<END
             <!DOCTYPE html>
             <html lang="fr">
@@ -32,6 +34,3 @@ try {
         END;
     echo($pageComplete);
 }
-
-// Lancement du dispatcher
-
