@@ -23,7 +23,7 @@ class DisplayEpisode extends ActionConnecte {
 
         $renderer = new EpisodeSerieRenderer($episode);
         $user = AuthnProvider::getSignedInUser();
-        $id_user = (int) $repo->getUserInfo($user)[2];
+        $id_user = (int) $repo->getUserInfo($user)['id'];
         $repo->updateEpisodeVisionne($id_user,$episodeId);
         $episodeDetails = $renderer->render(Renderer::LONG);
 

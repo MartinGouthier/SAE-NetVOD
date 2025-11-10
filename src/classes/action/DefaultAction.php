@@ -18,7 +18,7 @@ class DefaultAction extends Action {
         HTML;
         try {
             $repo = NetvodRepository::getInstance();
-            $id_user = (int) $repo->getUserInfo(AuthnProvider::getSignedInUser())[2];
+            $id_user = (int) $repo->getUserInfo(AuthnProvider::getSignedInUser())['id'];
 
             $html .= "<br><h2>Reprendre vos séries :</h2>";
             $listeSeriesRecentes = $repo->getSeriesEnCours($id_user);

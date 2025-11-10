@@ -21,7 +21,7 @@ class DemandeResetPassWord extends Action {
         
         $token = AuthnProvider::passWordToken($email);
         
-        $resetUrl = "http://localhost/td/SAE-NetVOD/?action=resetpassword&token=" . urlencode($token);
+        $resetUrl = "?action=resetpassword&token=" . urlencode($token);
         
         $html = "<p>Voici votre lien pour changer votre mot de passe, valable pendant 5 minutes :</p><p><a href='$resetUrl'>$resetUrl</a></p>";
     

@@ -323,7 +323,7 @@ class NetvodRepository
         $stmt->bindParam(2,$user['id']);
         $stmt->execute();
     }
-    
+
     public function getSeriesPref(int $id_user) : array{
         $requete = "SELECT id_serie FROM seriepreferees WHERE id_user = ?;";
         $statm = $this->pdo->prepare($requete);
@@ -334,7 +334,8 @@ class NetvodRepository
         }
         return $tab;
     }
-    public function addSeriePref(int $id_serie,int $id_user) : void{
+
+    public function addSeriePref(int $id_serie, int $id_user) : void{
         try {
             $requete = "INSERT INTO seriepreferees VALUES (?,?);";
             $statm = $this->pdo->prepare($requete);

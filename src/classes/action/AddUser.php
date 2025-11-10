@@ -33,7 +33,7 @@ class AddUser extends Action {
         
         $token = AuthnProvider::register($email, $password);
         
-        $activationUrl = "http://localhost/td/SAE-NetVOD/?action=user-act&token=" . urlencode($token);
+        $activationUrl = "?action=user-act&token=" . urlencode($token);
         
         $html = "<p>Voici votre lien d'activation :</p><p><a href='$activationUrl'>$activationUrl</a></p>";
     

@@ -18,7 +18,7 @@ class UpdateSeriePrefAction extends ActionConnecte {
         $idSerie = ($_POST['id_serie']);
         $typeModif = $_POST['typeModif'];
         $repo = NetvodRepository::getInstance();
-        $idUser = $repo->getUserInfo(AuthnProvider::getSignedInUser())[2];
+        $idUser = $repo->getUserInfo(AuthnProvider::getSignedInUser())['id'];
 
         if ($typeModif === "ajout") {
             $repo->addSeriePref($idSerie,$idUser);
