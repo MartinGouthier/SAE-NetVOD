@@ -512,4 +512,24 @@ class NetvodRepository
         }
         return $tab;
     }
+
+    public function getNbEpisodesVus(int $id_user) {
+        $requete = "SELECT count(*) FROM episodevisionne WHERE id_user = ?;";
+        $statm = $this->pdo->prepare($requete);
+        $statm->execute([$id_user]);
+        return $statm->fetch()[0];
+    }
+
+    public function getTotalEpisodes() {
+        $requete = "SELECT count(*) FROM episode;";
+        $statm = $this->pdo->query($requete);
+        return $statm->fetch()[0];
+    }
+
+    public function getNbCommentairesPostes(int $id_user) {
+        $requete = "SELECT count(*) FROM notation WHERE id_user = ?;";
+        $statm = $this->pdo->prepare($requete);
+        $statm->execute([$id_user]);
+        return $statm->fetch()[0];
+    }
 }
