@@ -57,7 +57,7 @@ class SerieRenderer implements Renderer {
         } elseif ($selecteur === Renderer::SERIERECENTE) {
             // image cliquable vers le prochain épisode ou la série
             $repo = NetvodRepository::getInstance();
-            $id_user = intval($repo->getUserInfo(AuthnProvider::getSignedInUser())[2]);
+            $id_user = intval($repo->getUserInfo(AuthnProvider::getSignedInUser())["id"]);
             $episode = $repo->getProchainEpisodeEnCours($id_user, $idSerie);
 
             if ($episode) {

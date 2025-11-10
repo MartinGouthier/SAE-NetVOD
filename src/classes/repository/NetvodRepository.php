@@ -2,6 +2,7 @@
 
 namespace iutnc\netvod\repository;
 
+use iutnc\netvod\action\CatalogueAction;
 use iutnc\netvod\exception\DatabaseConnectionException;
 use iutnc\netvod\video\EpisodeSerie;
 use iutnc\netvod\video\Serie;
@@ -216,26 +217,59 @@ class NetvodRepository
         return $tab;
     }
 
-    public function getSeriesFiltre(int $typeFiltre, string $filtre) : array {
-        // Filtre 1 = Mot Clé
-        if ($typeFiltre === 1) {
-            $requete = "SELECT id FROM serie WHERE titre LIKE ? OR descriptif LIKE ?;";
-            $statm = $this->pdo->prepare($requete);
-            $statm->execute(["%$filtre%","%$filtre%"]);
-        }else {
-            // Filtre 2 = Genre
-            if ($typeFiltre === 2)
-                $requete = "SELECT id FROM serie WHERE genre = ?;";
-            else
-                // Filtre 3 = Type de publique
-                $requete = "SELECT id FROM serie WHERE typePublic = ?;";
-            $statm = $this->pdo->prepare($requete);
-            $statm->execute([$filtre]);
-        }
+
+    public function getSeriesTriees(int $typeTri) : array {
+        $tri = match($typeTri){
+            CatalogueAction::TRITITRE => "serie.titre",
+            CatalogueAction::TRIDATEAJOUT => "date_ajout",
+            CatalogueAction::TRINBREPISODE => "nbr",
+            CatalogueAction::TRIMOYENNE => "moyenne",
+            default => "id"
+        };
+        $requete = <<<SQL
+                     SELECT serie.id, count(distinct episode.id) as nbr, avg(note) as moyenne FROM serie 
+                     INNER JOIN episode ON episode.serie_id = serie.id 
+                     LEFT JOIN notation ON notation.id_serie = serie.id
+                     GROUP BY serie.id
+                     ORDER BY $tri;
+    SQL;
+        if ($tri === "nbr" || $tri === "moyenne")
+            $requete .= " DESC";
+        $statm = $this->pdo->query($requete);
         $tab = [];
         while ($donnee = $statm->fetch()){
-            $serie = $this->getSerieById($donnee[0]);
-            $tab[] = $serie;
+            if (isset($donnee[0]))
+                $tab[] = $donnee[0];
+        }
+        return $tab;
+    }
+
+    public function getSeriesFiltrees(array $idSeries, int $typeFiltre, string $filtre = "") : array{
+        $typeFiltre = match($typeFiltre){
+            CatalogueAction::FILTREMOTCLE => "motcle",
+            CatalogueAction::FILTREGENRE => "genre",
+            CatalogueAction::FILTREPUBLIC => "typePublic",
+            default => "none"
+        };
+        if ($typeFiltre === "none")
+            return $idSeries;
+        $tab = [];
+        if ($typeFiltre === "genre" || $typeFiltre === "typePublic"){
+            foreach ($idSeries as $id){
+                $requete = "SELECT id FROM serie WHERE id = $id AND $typeFiltre = ?;";
+                $statm = $this->pdo->prepare($requete);
+                $statm->execute([$filtre]);
+                if ($donnee = $statm->fetch())
+                    $tab[] = intval($donnee[0]);
+            }
+        } else {
+            foreach ($idSeries as $id){
+                $requete = "SELECT id FROM serie WHERE id = $id AND (titre LIKE ? OR descriptif LIKE ?);";
+                $statm = $this->pdo->prepare($requete);
+                $statm->execute(["%$filtre%","%$filtre%"]);
+                if ($donnee = $statm->fetch())
+                    $tab[] = intval($donnee[0]);
+            }
         }
         return $tab;
     }
@@ -457,5 +491,25 @@ class NetvodRepository
         $statm = $this->pdo->prepare($requete);
         $statm->execute([$id_user,$id_episode]);
         return (intval($statm->fetch()[0] === 1));
+    }
+
+    public function getGenres() : array {
+        $requete = "SELECT distinct genre FROM serie;";
+        $statm = $this->pdo->query($requete);
+        $tab = [];
+        while ($donnee = $statm->fetch()){
+            $tab[] = $donnee[0];
+        }
+        return $tab;
+    }
+
+    public function getPublics() : array {
+        $requete = "SELECT distinct typePublic FROM serie;";
+        $statm = $this->pdo->query($requete);
+        $tab = [];
+        while ($donnee = $statm->fetch()){
+            $tab[] = $donnee[0];
+        }
+        return $tab;
     }
 }
