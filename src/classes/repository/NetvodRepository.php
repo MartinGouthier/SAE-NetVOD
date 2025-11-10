@@ -70,7 +70,7 @@ class NetvodRepository
 
     public function activationCompte(string $token): void {
        
-        $stmt = "SELECT * FROM user WHERE token = ?";
+        $stmt = "SELECT * FROM user WHERE token = ? ";
         $stmt = $this->pdo->prepare($stmt); 
         $stmt->bindParam(1,$token);
         $stmt->execute();
@@ -221,6 +221,38 @@ class NetvodRepository
         $statm->execute();
 
         return $token;
+
+    }
+
+
+    public function registerNewpassWord($password, $token): void {
+        
+        $stmt = "SELECT * FROM user WHERE token = ? ";
+        $stmt = $this->pdo->prepare($stmt); 
+        $stmt->bindParam(1,$token);
+        $stmt->execute();
+        $user = $stmt->fetch();
+
+        
+        if (!$user) {
+            throw new TokenException("Token error : token invalide ou expiré");
+        }
+
+        // Vérifier que le compte est actif
+        if ($user['active'] !== 1){
+            throw new TokenException("Token error : compte non activé");
+        }
+
+        // Vérifier l’expiration
+        if (strtotime($user['token_expire']) < time()) {
+             throw new TokenException("Token error : token expiré");
+        }
+
+        // modifier le mcompte
+        $stmt = $this->pdo->prepare("UPDATE user SET passwd = ?, token = NULL, token_expire = NULL WHERE id = ?");   
+        $stmt->bindParam(1, $password);
+        $stmt->bindParam(2,$user['id']);
+        $stmt->execute();
 
     }
 }

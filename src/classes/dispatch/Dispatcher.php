@@ -52,7 +52,7 @@ class Dispatcher {
             case 'password-perdu':
                 $a = new DemandeResetPassWord();
                 break;
-            case 'resetPassWord':
+            case 'resetpassword':
                 $a = new ResetPassWord();
                 break;
             case 'user-profile':

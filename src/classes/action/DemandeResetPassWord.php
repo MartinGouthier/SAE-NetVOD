@@ -6,7 +6,7 @@ use iutnc\netvod\auth\AuthnProvider;
 use iutnc\netvod\exception\AuthException;
 use iutnc\netvod\exception\TokenException;
 /**
- * Classe représentant l'action de changer de password et la création de l'url
+ * Classe représentant l'action de demandé le changement de password, gère la création de l'url
  */
 class DemandeResetPassWord extends Action {
 
@@ -17,32 +17,31 @@ class DemandeResetPassWord extends Action {
         // Si le reset est demandé, affiche l'url 
         try {
       
-
-          
         $email = $_POST['email'];
         
         $token = AuthnProvider::passWordToken($email);
         
-        $resetUrl = "http://localhost/td/SAE-NetVOD/?action=user-act&token=" . urlencode($token);
+        $resetUrl = "http://localhost/td/SAE-NetVOD/?action=resetpassword&token=" . urlencode($token);
         
-        $html = "<p>Voici votre lien pour changer votre mot de passe :</p><p><a href='$resetUrl'>$resetUrl</a></p>";
+        $html = "<p>Voici votre lien pour changer votre mot de passe, valable pendant 5 minutes :</p><p><a href='$resetUrl'>$resetUrl</a></p>";
     
 
         } catch (AuthException $e) {
 
-            return "<p>Erreur : " . $e->getMessage() . "</p>";
+            return "<p>" . $e->getMessage() . "</p>";
       
         } catch (TokenException $e) {
 
-            return "<p>Erreur : " . $e->getMessage() . "</p";
+            return "<p>" . $e->getMessage() . "</p";
         }
         
+        return $html ;
       
     }
     
 
         /**
-         * Si le formulaire de demande de reset est soumis
+         * Le formulaire de demande de reset est soumis
          */
         public function GET() : string {
         

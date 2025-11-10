@@ -60,4 +60,14 @@ class AuthnProvider
     }
 
 
+    public static function AuthnResetPassWord($token, $password): void {
+        if (strlen($password) < 10){
+            throw new AuthException("Erreur : Mot de passe trop court");
+        }
+        $bdd = NetvodRepository::getInstance();
+        $hash = password_hash($password, PASSWORD_DEFAULT, ['cost'=>12]);
+        $bdd->registerNewpassWord($hash, $token);
+    }
+
+
 }
