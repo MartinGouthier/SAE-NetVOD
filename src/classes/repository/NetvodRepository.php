@@ -46,7 +46,7 @@ class NetvodRepository
 
     }
 
-    public function getUserInfo(string $email) : array
+    public function getUserInfo(string $email) : array | false
     {
         $requete = "SELECT passwd, username, first_name, last_name, birthday, favorite_genre, role, id FROM user WHERE email = ?;";
         $statm = $this->pdo->prepare($requete);
