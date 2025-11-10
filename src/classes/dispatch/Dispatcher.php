@@ -2,7 +2,6 @@
 
 namespace iutnc\netvod\dispatch;
 
-use iutnc\netvod\action\AddCommentaireEtNote;
 use iutnc\netvod\action\DisplayCommentaires;
 use iutnc\netvod\action\UpdateSeriePrefAction;
 use iutnc\netvod\action\DisplayEpisode;
@@ -33,9 +32,6 @@ class Dispatcher {
                 break;
             case 'add-user':
                 $a = new AddUser();
-                break;
-            case 'add-commentary-note':
-                $a = new AddCommentaireEtNote();
                 break;
             case 'display-episode':
                 $a = new DisplayEpisode();

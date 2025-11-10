@@ -193,7 +193,7 @@ class NetvodRepository
     public function notePresente(int $id_user, int $id_serie) : bool{
         $requete = "SELECT count(*) FROM notation WHERE id_serie = ? AND id_user = ?";
         $statm = $this->pdo->prepare($requete);
-        $statm->execute([$id_user,$id_serie]);
+        $statm->execute([$id_serie,$id_user]);
         $n = (int) $statm->fetch()[0];
         return ($n === 1);
     }
