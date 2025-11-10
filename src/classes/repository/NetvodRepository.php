@@ -2,6 +2,7 @@
 
 namespace iutnc\netvod\repository;
 
+use iutnc\netvod\exception\DatabaseConnectionException;
 use iutnc\netvod\video\EpisodeSerie;
 use iutnc\netvod\video\Serie;
 use iutnc\netvod\exception\TokenException;
@@ -32,11 +33,16 @@ class NetvodRepository
     {
         $conf = parse_ini_file($file);
         if ($conf === false) {
-            throw new \Exception("Error reading configuration file");
+            throw new DatabaseConnectionException("Erreur : impossible de lire le fichier de configuration");
         }
-
         $dsn = "{$conf['driver']}:host={$conf['host']};dbname={$conf['database']}";
         self::$config = ['dsn' => $dsn, 'user' => $conf['username'], 'pass' => $conf['password']];
+        try {
+            $connexionBdd = new NetvodRepository(self::$config);
+        } catch (\PDOException) {
+            throw new DatabaseConnectionException("Erreur : connexion à la base de données refusée");
+        }
+
     }
 
     public function getUserInfo(string $email) : array
@@ -127,17 +133,53 @@ class NetvodRepository
         $statm = $this->pdo->prepare($requete);
         $statm->execute([$idSerie]);
         $donnee = $statm->fetch();
-        $serie = new Serie($donnee[1],$donnee[2],$donnee[3],$donnee[4],$donnee[6],$donnee[7],$donnee[0]);
 
-        $requete = "SELECT * FROM episode WHERE serie_id = ?;";
-        $statm2 = $this->pdo->prepare($requete);
-        $statm2->execute([$idSerie]);
-        while ($donneeEpisodes = $statm2->fetch()){
-            $episode = new EpisodeSerie($donneeEpisodes[1],$donneeEpisodes[2],$donneeEpisodes[3],$donneeEpisodes[4],$donneeEpisodes[5],$donneeEpisodes[0],$donneeEpisodes[6]);
-            $serie->ajouterEpisode($episode);
+        $moyenneres = $this->getMoyenne($idSerie);
+        $moyenne = null;
+        if ((int)$moyenneres[1] > 0) {
+            $moyenne = (float)$moyenneres[0];
         }
-        return $serie;
+        return new Serie($donnee[1],$donnee[2],$donnee[3],$donnee[4],$donnee[5],$donnee[6],$donnee[7],$donnee[0], $moyenne);
     }
+    public function getEpisodesBySerie(int $idSerie): array {
+        $requete = "SELECT * FROM episode WHERE serie_id = ? ORDER BY numero ASC;";
+        $statm = $this->pdo->prepare($requete);
+        $statm->execute([$idSerie]);
+
+        $episodes = [];
+        while ($donnee = $statm->fetch()) {
+            $episode = new EpisodeSerie(
+                $donnee['numero'],
+                $donnee['titre'],
+                $donnee['resume'],
+                $donnee['duree'],
+                $donnee['file'],
+                $donnee['id'],
+                $donnee['serie_id']
+            );
+            $episodes[] = $episode;
+        }
+        return $episodes;
+    }
+
+    public function getCommentairesBySerie(int $idSerie): array {
+        $requete = "
+                    SELECT user.email, notation.note, notation.commentaire
+                    FROM notation
+                    INNER JOIN user ON user.id = notation.id_user
+                    WHERE notation.id_serie = ?
+                ";
+
+        $statm = $this->pdo->prepare($requete);
+        $statm->execute([$idSerie]);
+
+        $commentaires = [];
+        while ($donnee = $statm->fetch(PDO::FETCH_ASSOC)) {
+            $commentaires[] = ['email' => $donnee['email'], 'note' => $donnee['note'], 'commentaire' => $donnee['commentaire']];
+        }
+        return $commentaires;
+    }
+
 
     public function getEpisodeById(int $idEpisode) : EpisodeSerie{
         $requete = "SELECT * FROM episode WHERE id = ?";
@@ -177,10 +219,9 @@ class NetvodRepository
     public function getSeriesFiltre(int $typeFiltre, string $filtre) : array {
         // Filtre 1 = Mot Clé
         if ($typeFiltre === 1) {
-            //TODO Tester et verifier si LIKE fonctionne
-            $requete = "SELECT id FROM serie WHERE titre LIKE '%?%' OR descriptif LIKE '%?%';";
+            $requete = "SELECT id FROM serie WHERE titre LIKE ? OR descriptif LIKE ?;";
             $statm = $this->pdo->prepare($requete);
-            $statm->execute([$filtre,$filtre]);
+            $statm->execute(["%$filtre%","%$filtre%"]);
         }else {
             // Filtre 2 = Genre
             if ($typeFiltre === 2)
@@ -281,6 +322,139 @@ class NetvodRepository
         $stmt->bindParam(1, $password);
         $stmt->bindParam(2,$user['id']);
         $stmt->execute();
+    }
+    
+    public function getSeriesPref(int $id_user) : array{
+        $requete = "SELECT id_serie FROM seriepreferees WHERE id_user = ?;";
+        $statm = $this->pdo->prepare($requete);
+        $statm->execute([$id_user]);
+        $tab = [];
+        while ($donnee = $statm->fetch()){
+            $tab[] = $this->getSerieById($donnee[0]);
+        }
+        return $tab;
+    }
+    public function addSeriePref(int $id_serie,int $id_user) : void{
+        try {
+            $requete = "INSERT INTO seriepreferees VALUES (?,?);";
+            $statm = $this->pdo->prepare($requete);
+            $statm->execute([$id_serie, $id_user]);
+        } catch (\PDOException){}
+    }
 
+    public function retirerSeriePref(int $id_serie, int $id_user): void
+    {
+        $requete = "DELETE FROM seriepreferees WHERE id_serie = ? AND id_user = ?;";
+        $statm = $this->pdo->prepare($requete);
+        $statm->execute([$id_serie,$id_user]);
+    }
+
+
+    public function updateSerieEnCours(int $id_serie, int $id_user): void {
+        $requete = "SELECT COUNT(*) FROM serieEnCours WHERE id_serie = ? AND id_user = ?;";
+        $statm = $this->pdo->prepare($requete);
+        $statm->execute([$id_serie, $id_user]);
+        $existe = (int) $statm->fetch()[0];
+        if ($existe === 0) {
+            $requete = "INSERT INTO serieEnCours (id_serie, id_user, etatVisionnage) VALUES (?, ?, 0);";
+            $statm = $this->pdo->prepare($requete);
+            $statm->execute([$id_serie, $id_user]);
+        } else {
+
+            $requete = <<<SQL
+                            -- Nbr d'épisodes visionnés
+                            SELECT count(*) FROM episodevisionne 
+                            INNER JOIN episode ON episode.id = episodevisionne.id_episode
+                            WHERE serie_id = ? AND id_user = ?
+            SQL;
+            $statm1 = $this->pdo->prepare($requete);
+            $statm1->execute([$id_serie,$id_user]);
+            $nbrVisionne = (int) $statm1->fetch()[0];
+            $requete = <<<SQL
+                        -- Nbr d'épisodes dans la série
+                        SELECT count(*) FROM episode
+                        WHERE serie_id = ?;
+                        SQL;
+            $statm2 = $this->pdo->prepare($requete);
+            $statm2->execute([$id_serie]);
+            $nbrEpisodes = (int) $statm2->fetch()[0];
+            if ($nbrEpisodes ===  $nbrVisionne) {
+                $requete = "UPDATE serieEnCours SET etatVisionnage = 1 WHERE id_serie = ? AND id_user = ?;";
+                $statm3 = $this->pdo->prepare($requete);
+                $statm3->execute([$id_serie, $id_user]);
+            }
+        }
+    }
+
+    public function updateEpisodeVisionne(int $id_user, int $id_episode) : void
+    {
+        $requete = "SELECT count(*) FROM episodevisionne WHERE id_user = ? AND id_episode = ?;";
+        $statm = $this->pdo->prepare($requete);
+        $statm->execute([$id_user,$id_episode]);
+        $n = (int) $statm->fetch()[0];
+        if ($n === 0){
+            $requete = "INSERT INTO episodevisionne VALUES (?,?);";
+            $statm = $this->pdo->prepare($requete);
+            $statm->execute([$id_episode,$id_user]);
+            $episode = $this->getEpisodeById($id_episode);
+            $this->updateSerieEnCours($episode->__get("id_serie"),$id_user);
+        }
+    }
+
+    public function getSeriesEnCours(int $id_user): array {
+        $requete = "SELECT id_serie, etatVisionnage FROM serieEnCours WHERE id_user = ?;";
+        $statm = $this->pdo->prepare($requete);
+        $statm->execute([$id_user]);
+        $tab = [];
+        while ($donnee = $statm->fetch()) {
+            if (intval($donnee[1]) === 0) {
+                $serie = $this->getSerieById($donnee['id_serie']);
+                $tab[] = $serie;
+            }
+        }
+        return $tab;
+    }
+
+    public function getSeriesTerminees(int $id_user) : array{
+        $requete = "SELECT id_serie FROM serieencours WHERE etatVisionnage = 1 AND id_user = ?;";
+        $statm = $this->pdo->prepare($requete);
+        $statm->execute([$id_user]);
+        $tab = [];
+        while ($donnee = $statm->fetch()){
+            $tab[] = $this->getSerieById($donnee[0]);
+        }
+        return $tab;
+    }
+
+    public function getMoyenne(int $id_serie) : array{
+        $requete = "SELECT round(avg(note),2), count(note) FROM notation WHERE id_serie = ?;";
+        $statm = $this->pdo->prepare($requete);
+        $statm->execute([$id_serie]);
+        return $statm->fetch();
+    }
+
+    public function getProchainEpisodeEnCours(int $id_user, int $id_serie) : EpisodeSerie|false {
+        $requete = <<<SQL
+                    SELECT max(numero) FROM episodevisionne
+                    INNER JOIN episode ON episode.id = episodevisionne.id_episode
+                    WHERE id_user = ? AND serie_id = ?;
+                    SQL;
+        $statm = $this->pdo->prepare($requete);
+        $statm->execute([$id_user,$id_serie]);
+        $numNouveauEpisode = intval($statm->fetch()[0]) + 1;
+        $requete = "SELECT id FROM episode WHERE serie_id = ? AND numero = $numNouveauEpisode";
+        $statm = $this->pdo->prepare($requete);
+        $statm->execute([$id_serie]);
+        $res = $statm->fetch();
+        if (!$res)
+            return false;
+        return $this->getEpisodeById(intval($res[0]));
+    }
+
+    public function estEpisodeVisionne(int $id_user, int $id_episode) : bool {
+        $requete = "SELECT count(*) FROM episodevisionne WHERE id_user = ? AND id_episode = ?;";
+        $statm = $this->pdo->prepare($requete);
+        $statm->execute([$id_user,$id_episode]);
+        return (intval($statm->fetch()[0] === 1));
     }
 }
