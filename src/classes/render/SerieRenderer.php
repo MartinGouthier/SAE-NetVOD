@@ -170,7 +170,21 @@ class SerieRenderer implements Renderer {
         if (!empty($comments)) {
             // chaque commentaire avec l'utilisateur
             foreach ($comments as $c) {
-                $html .= "<p><strong>{$c['user']}</strong> {$c['texte']}</p>";
+                $email = htmlspecialchars($c['email']);
+                $note = htmlspecialchars($c['note']);
+                $commentaire = htmlspecialchars($c['commentaire']);
+
+                $html .= <<<HTML
+                    <div class="commentaire">
+                        <div class="comment-header">
+                            <strong>{$email}</strong>
+                            <span class="note">Note : {$note}/5</span>
+                        </div>
+                        <div class="comment-body">
+                            <p>{$commentaire}</p>
+                        </div>
+                    </div>
+                HTML;
             }
         }
         else {

@@ -1,18 +1,15 @@
 <?php
 namespace iutnc\netvod\action;
 
-use iutnc\netvod\auth\AuthnProvider;
-use iutnc\netvod\render\EpisodeSerieRenderer;
-use iutnc\netvod\render\Renderer;
+use iutnc\netvod\render\SerieRenderer;
 use iutnc\netvod\repository\NetvodRepository;
 
 class DisplayCommentaires extends ActionConnecte {
     public function GET(): string {
-        $episodeId = $_GET['episode'];
+        $idSerie = $_GET['id_serie'];
 
         $repo = NetvodRepository::getInstance();
-        $episode = $repo->getEpisodeById($episodeId);
-        $serie = $repo->getSerieById($episode->__get('id_serie'));
+        $serie = $repo->getSerieById($idSerie);
 
         $renderer = new SerieRenderer($serie);
         return $renderer->render(SerieRenderer::COMMENTAIRES);

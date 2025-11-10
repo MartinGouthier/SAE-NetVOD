@@ -3,6 +3,7 @@
 namespace iutnc\netvod\dispatch;
 
 use iutnc\netvod\action\AddCommentaireEtNote;
+use iutnc\netvod\action\DisplayCommentaires;
 use iutnc\netvod\action\UpdateSeriePrefAction;
 use iutnc\netvod\action\DisplayEpisode;
 use iutnc\netvod\action\DisplaySerie;
@@ -49,7 +50,7 @@ class Dispatcher {
                 $a =new UpdateSeriePrefAction();
                 break;
             case 'display-commentaires':
-                $a =new UpdateSeriePrefAction();
+                $a =new DisplayCommentaires();
                 break;
         }
         $html = $a->execute();

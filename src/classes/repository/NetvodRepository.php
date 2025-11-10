@@ -121,13 +121,19 @@ class NetvodRepository
     }
 
     public function getCommentairesBySerie(int $idSerie): array {
-        $requete = "SELECT id_user, note, commentaire FROM notation WHERE id_serie = ?";
+        $requete = "
+                    SELECT user.email, notation.note, notation.commentaire
+                    FROM notation
+                    INNER JOIN user ON user.id = notation.id_user
+                    WHERE notation.id_serie = ?
+                ";
+
         $statm = $this->pdo->prepare($requete);
         $statm->execute([$idSerie]);
 
         $commentaires = [];
-        while ($donnee = $statm->fetch()) {
-            $commentaires[] = [$donnee['id_user'],$donnee['note'],$donnee['commentaire']];
+        while ($donnee = $statm->fetch(PDO::FETCH_ASSOC)) {
+            $commentaires[] = ['email' => $donnee['email'], 'note' => $donnee['note'], 'commentaire' => $donnee['commentaire']];
         }
         return $commentaires;
     }
