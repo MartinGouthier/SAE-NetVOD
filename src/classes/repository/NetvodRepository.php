@@ -41,7 +41,7 @@ class NetvodRepository
 
     public function getUserInfo(string $email) : array
     {
-        $requete = "SELECT passwd, role, id FROM user WHERE email = ?;";
+        $requete = "SELECT passwd, username, first_name, last_name, birthday, favorite_genre, role, id FROM user WHERE email = ?;";
         $statm = $this->pdo->prepare($requete);
         $statm->bindParam(1, $email);
         $statm->execute();
@@ -187,5 +187,34 @@ class NetvodRepository
             $tab[] = $serie;
         }
         return $tab;
+    }
+
+    public function updateUserProfile(string $email, string $username, string $first_name, string $last_name, string $birthday, string $genre): void {
+        if($username != '') {
+            $requete = "UPDATE user SET username = ? WHERE email = ?;";
+            $statm = $this->pdo->prepare($requete);
+            $statm->execute([$username, $email]);
+        }
+        if($first_name != '') {
+            $requete = "UPDATE user SET first_name = ? WHERE email = ?;";
+            $statm = $this->pdo->prepare($requete);
+            $statm->execute([$first_name, $email]);
+        }
+        if($last_name != '') {
+            $requete = "UPDATE user SET last_name = ? WHERE email = ?;";
+            $statm = $this->pdo->prepare($requete);
+            $statm->execute([$last_name, $email]);
+        }
+        if($birthday != '') {
+            $birthday = date('Y-m-d', strtotime($birthday));
+            $requete = "UPDATE user SET birthday = ? WHERE email = ?;";
+            $statm = $this->pdo->prepare($requete);
+            $statm->execute([$birthday, $email]);
+        }
+        if($genre != '') {
+            $requete = "UPDATE user SET favorite_genre = ? WHERE email = ?;";
+            $statm = $this->pdo->prepare($requete);
+            $statm->execute([$genre, $email]);
+        }
     }
 }

@@ -24,11 +24,12 @@ class ProfileRenderer implements Renderer {
         $affichage .= "</p>";
         $affichage .= "<p><strong>Prenom :</strong> " . htmlspecialchars($this->profile['first_name']) . "</p>";
         $affichage .= "<p><strong>Nom :</strong> " . htmlspecialchars($this->profile['last_name']) . "</p>";
-        $affichage .= "<p><strong>Date de naissance :</strong> " . htmlspecialchars($this->profile['date_of_birth']) . "</p>";
+        $affichage .= "<p><strong>Date de naissance :</strong> " . htmlspecialchars($this->profile['birthday']) . "</p>";
         $affichage .= "<p><strong>Genre préféré :</strong> " . htmlspecialchars($this->profile['favorite_genre']) . "</p>";
         $affichage .= "<p><strong>Nombre d'episodes vus :</strong> " . htmlspecialchars($this->profile['episodes_watched']) . "</p>";
         $affichage .= "<p><strong>Taux de complétion du catalogue :</strong> " . htmlspecialchars($this->profile['completion_rate']) . "%</p>";
         $affichage .= "<p><strong>Nombre de commentaires postés :</strong> " . htmlspecialchars($this->profile['comments_posted']) . "</p>";
+        $affichage .= "<a href='?action=SerieTerminees'>Voir les séries terminées</a><br>";
         $affichage .= "<a href='?action=edit-profile'>Modifier le profil</a>";
         $affichage .= "</div>";
         return $affichage;

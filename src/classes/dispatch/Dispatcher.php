@@ -11,6 +11,7 @@ use iutnc\netvod\action\CatalogueAction;
 use iutnc\netvod\action\AddUser;
 use iutnc\netvod\action\Signin;
 use iutnc\netvod\action\UserProfile;
+use iutnc\netvod\action\EditProfile;
 
 class Dispatcher {
     private string $action;
@@ -49,6 +50,9 @@ class Dispatcher {
                 break;
             case 'user-profile':
                 $a = new UserProfile();
+                break;
+            case 'edit-profile':
+                $a = new EditProfile();
                 break;
         }
         $html = $a->execute();
