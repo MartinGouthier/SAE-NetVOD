@@ -49,7 +49,7 @@ class NetvodRepository
     }
     public function registerNewUser(string $email, string $passwd) : string {
         // supprime les comptes utilisateurs non activés avec un token expiré 
-        $requete = "DELETE FROM user WHERE token_expire IS NOT NULL AND token_expire < NOW();";
+        $requete = "DELETE FROM user WHERE token_expire IS NOT NULL AND token_expire < NOW() AND active != 1;";
         $statm = $this->pdo->prepare($requete);
         $statm->execute();
         
@@ -70,14 +70,21 @@ class NetvodRepository
 
     public function activationCompte(string $token): void {
        
-        $stmt = "SELECT * FROM user WHERE token = ?";
+        $stmt = "SELECT * FROM user WHERE token = ? ";
         $stmt = $this->pdo->prepare($stmt); 
         $stmt->bindParam(1,$token);
         $stmt->execute();
         $user = $stmt->fetch();
 
+        
+
         if (!$user) {
             throw new TokenException("Token error : token invalide ou expiré");
+        }
+
+        // Vérifier que le compte n'est pas déjà actif
+        if ($user['active'] !== 0){
+            throw new TokenException("Token error : compte déjà activé");
         }
 
         // Vérifier l’expiration
@@ -91,6 +98,9 @@ class NetvodRepository
         $stmt->execute();
 
     }
+
+    // Methode pour verifié si il y a un token et que le compte est déjà activé
+   
 
     public function verifieEmailExiste(string $email) : bool {
         $requete = "SELECT count(*) FROM user WHERE email = ?;";
@@ -216,5 +226,61 @@ class NetvodRepository
             $statm = $this->pdo->prepare($requete);
             $statm->execute([$genre, $email]);
         }
+    }
+    public function registerpassWordToken($email): String{
+        // supprime les token expiré 
+       $requete = "UPDATE user 
+                SET token = NULL, token_expire = NULL 
+                WHERE token_expire IS NOT NULL 
+                  AND token_expire < NOW() 
+                  AND active = 1";
+        $statm = $this->pdo->prepare($requete);
+        $statm->execute();
+        
+        $token = bin2hex(random_bytes(12));
+        $expire = date('Y-m-d H:i:s', time() + 300); // expire dans 5 minutes
+
+        $requete = "UPDATE user SET token = ?,token_expire = ? WHERE email = ? and active = 1 ;";
+
+        $statm = $this->pdo->prepare($requete);
+        $statm->bindParam(1, $token);
+        $statm->bindParam(2, $expire);
+        $statm->bindParam(3, $email);
+        $statm->execute();
+
+        return $token;
+
+    }
+
+
+    public function registerNewpassWord($password, $token): void {
+        
+        $stmt = "SELECT * FROM user WHERE token = ? ";
+        $stmt = $this->pdo->prepare($stmt); 
+        $stmt->bindParam(1,$token);
+        $stmt->execute();
+        $user = $stmt->fetch();
+
+        
+        if (!$user) {
+            throw new TokenException("Token error : token invalide ou expiré");
+        }
+
+        // Vérifier que le compte est actif
+        if ($user['active'] !== 1){
+            throw new TokenException("Token error : compte non activé");
+        }
+
+        // Vérifier l’expiration
+        if (strtotime($user['token_expire']) < time()) {
+             throw new TokenException("Token error : token expiré");
+        }
+
+        // modifier le mcompte
+        $stmt = $this->pdo->prepare("UPDATE user SET passwd = ?, token = NULL, token_expire = NULL WHERE id = ?");   
+        $stmt->bindParam(1, $password);
+        $stmt->bindParam(2,$user['id']);
+        $stmt->execute();
+
     }
 }

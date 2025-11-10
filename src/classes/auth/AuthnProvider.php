@@ -44,5 +44,30 @@ class AuthnProvider
             throw new AuthException("Auth error : not signed in");
         return $_SESSION['user'];
     }
+    
+
+    //vérification avant de crée le token pour reset le password à un email donné
+    public static function passWordToken($email) : String {
+        if (! filter_var($email, FILTER_VALIDATE_EMAIL))
+            throw new AuthException("error : Email incorrect");
+        $bdd = NetvodRepository::getInstance();
+        if ($bdd->verifieEmailExiste($email)){
+            $token = $bdd->registerpassWordToken($email);
+            return $token ;
+        }
+        
+         throw new AuthException("Erreur : Email non enregistré");
+    }
+
+
+    public static function AuthnResetPassWord($token, $password): void {
+        if (strlen($password) < 10){
+            throw new AuthException("Erreur : Mot de passe trop court");
+        }
+        $bdd = NetvodRepository::getInstance();
+        $hash = password_hash($password, PASSWORD_DEFAULT, ['cost'=>12]);
+        $bdd->registerNewpassWord($hash, $token);
+    }
+
 
 }

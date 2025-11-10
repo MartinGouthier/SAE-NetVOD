@@ -12,6 +12,8 @@ use iutnc\netvod\action\AddUser;
 use iutnc\netvod\action\Signin;
 use iutnc\netvod\action\UserProfile;
 use iutnc\netvod\action\EditProfile;
+use iutnc\netvod\action\ResetPassWord;
+use iutnc\netvod\action\DemandeResetPassWord;
 
 class Dispatcher {
     private string $action;
@@ -47,6 +49,12 @@ class Dispatcher {
                 break;
             case 'display-serie':
                 $a = new DisplaySerie();
+                break;
+            case 'password-perdu':
+                $a = new DemandeResetPassWord();
+                break;
+            case 'resetpassword':
+                $a = new ResetPassWord();
                 break;
             case 'user-profile':
                 $a = new UserProfile();

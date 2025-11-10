@@ -17,17 +17,26 @@ class AddUser extends Action {
     {
 
         try {
-        $email = $_POST['email'];
+        $password = $_POST['password'] ?? null;
+        $repassword = $_POST['rePassword'] ?? null;
         $password = $_POST['password'];
+
+
+            if (!$password || !$repassword) {
+                return "<p>Veuillez remplir tous les champs</p>";
+            }
+
+            if ($password !== $repassword) {
+                return "<p>Les mots de passe ne correspondent pas</p>";
+            }
+
         
         $token = AuthnProvider::register($email, $password);
         
         $activationUrl = "http://localhost/td/SAE-NetVOD/?action=user-act&token=" . urlencode($token);
         
-        $html = "<p>Voici votre lien d’activation :</p><p><a href='$activationUrl'>$activationUrl</a></p>";
-        
-        $email = $_POST['email'];
-        
+        $html = "<p>Voici votre lien d'activation :</p><p><a href='$activationUrl'>$activationUrl</a></p>";
+    
             
         } catch (AuthException $e) {
 
