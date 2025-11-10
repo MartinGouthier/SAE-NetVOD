@@ -49,7 +49,7 @@ class NetvodRepository
     }
     public function registerNewUser(string $email, string $passwd) : string {
         // supprime les comptes utilisateurs non activés avec un token expiré 
-        $requete = "DELETE FROM user WHERE token_expire IS NOT NULL AND token_expire < NOW() AND active != 1;";
+        $requete = "DELETE FROM user WHERE token_expire IS NOT NULL AND token_expire < NOW() AND role != 1;";
         $statm = $this->pdo->prepare($requete);
         $statm->execute();
         
@@ -83,7 +83,7 @@ class NetvodRepository
         }
 
         // Vérifier que le compte n'est pas déjà actif
-        if ($user['active'] !== 0){
+        if ($user['role'] !== 0){
             throw new TokenException("Token error : compte déjà activé");
         }
 
@@ -93,7 +93,7 @@ class NetvodRepository
         }
 
         // Activer le compte
-        $stmt = $this->pdo->prepare("UPDATE user SET active = 1, token = NULL, token_expire = NULL WHERE id = ?");   
+        $stmt = $this->pdo->prepare("UPDATE user SET role = 1, token = NULL, token_expire = NULL WHERE id = ?");   
         $stmt->bindParam(1,$user['id']);
         $stmt->execute();
 
@@ -233,14 +233,14 @@ class NetvodRepository
                 SET token = NULL, token_expire = NULL 
                 WHERE token_expire IS NOT NULL 
                   AND token_expire < NOW() 
-                  AND active = 1";
+                  AND role = 1";
         $statm = $this->pdo->prepare($requete);
         $statm->execute();
         
         $token = bin2hex(random_bytes(12));
         $expire = date('Y-m-d H:i:s', time() + 300); // expire dans 5 minutes
 
-        $requete = "UPDATE user SET token = ?,token_expire = ? WHERE email = ? and active = 1 ;";
+        $requete = "UPDATE user SET token = ?,token_expire = ? WHERE email = ? and role = 1 ;";
 
         $statm = $this->pdo->prepare($requete);
         $statm->bindParam(1, $token);
@@ -267,7 +267,7 @@ class NetvodRepository
         }
 
         // Vérifier que le compte est actif
-        if ($user['active'] !== 1){
+        if ($user['role'] !== 1){
             throw new TokenException("Token error : compte non activé");
         }
 

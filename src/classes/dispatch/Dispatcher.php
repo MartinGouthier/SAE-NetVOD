@@ -14,7 +14,7 @@ use iutnc\netvod\action\UserProfile;
 use iutnc\netvod\action\EditProfile;
 use iutnc\netvod\action\ResetPassWord;
 use iutnc\netvod\action\DemandeResetPassWord;
-
+use iutnc\netvod\action\UserActivation;
 class Dispatcher {
     private string $action;
 

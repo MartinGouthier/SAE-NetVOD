@@ -82,7 +82,6 @@ CREATE TABLE `user` (
   `role` INT(1) NOT NULL DEFAULT 0,
   `token` VARCHAR(64) DEFAULT NULL,
   `token_expire` DATETIME DEFAULT NULL,
-  `active` INT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

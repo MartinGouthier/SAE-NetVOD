@@ -19,7 +19,7 @@ class AddUser extends Action {
         try {
         $password = $_POST['password'] ?? null;
         $repassword = $_POST['rePassword'] ?? null;
-        $password = $_POST['password'];
+        $email = $_POST['email'];
 
 
             if (!$password || !$repassword) {
