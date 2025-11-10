@@ -16,6 +16,8 @@ use iutnc\netvod\action\EditProfile;
 use iutnc\netvod\action\ResetPassWord;
 use iutnc\netvod\action\DemandeResetPassWord;
 use iutnc\netvod\action\UserActivation;
+use iutnc\netvod\action\DisplaySerieTerminees;
+
 class Dispatcher {
     private string $action;
 
@@ -59,6 +61,9 @@ class Dispatcher {
                 break;
             case 'edit-profile':
                 $a = new EditProfile();
+                break;
+            case 'display-series-terminees':
+                $a = new DisplaySerieTerminees();
                 break;
             case 'update-series-pref':
                 $a =new UpdateSeriePrefAction();
