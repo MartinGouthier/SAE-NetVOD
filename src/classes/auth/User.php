@@ -6,7 +6,7 @@ use Exception;
 
 class User
 {
-    private string $email, $username, $prenom, $nom, $birthday, $genreFav;
+    private ?string $email, $username, $prenom, $nom, $birthday, $genreFav;
     private int $role, $id;
 
     /**
@@ -19,7 +19,7 @@ class User
      * @param int $role
      * @param int $id
      */
-    public function __construct(string $email, string $prenom, string $username, string $nom, string $birthday, string $genreFav, int $role, int $id)
+    public function __construct(string $email, ?string $prenom = null, ?string $username = null, ?string $nom = null, ?string $birthday = null, ?string $genreFav = null, int $role, int $id)
     {
         $this->email = $email;
         $this->prenom = $prenom;

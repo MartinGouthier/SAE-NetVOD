@@ -3,6 +3,7 @@
 namespace iutnc\netvod\render;
 
 use iutnc\netvod\auth\User;
+use iutnc\netvod\repository\NetvodRepository;
 
 class ProfileRenderer implements Renderer {
     
@@ -13,6 +14,12 @@ class ProfileRenderer implements Renderer {
     }
 
     public function render(int $selecteur=0): string {
+
+        $repo = NetvodRepository::getInstance();
+        $nbEpVus = $repo->getNbEpisodesVus($this->profile->__GET("id"));
+        $tauxCompletion = floor($nbEpVus / $repo->getTotalEpisodes() * 100);
+        $nbComments = $repo->getNbCommentairesPostes($this->profile->__GET("id"));
+
         $affichage = "<div class='profile'>";
         $affichage .= "<h2>Profil de l'utilisateur</h2>";
         $affichage .= "<p><strong>Nom d'utilisateur :</strong> " . htmlspecialchars($this->profile->__GET("username")) . "</p>";
@@ -29,12 +36,10 @@ class ProfileRenderer implements Renderer {
         $affichage .= "<p><strong>Date de naissance :</strong> " . htmlspecialchars($this->profile->__GET("birthday")) . "</p>";
         $affichage .= "<p><strong>Genre préféré :</strong> " . htmlspecialchars($this->profile->__GET("genreFav")) . "</p>";
         //TODO Finir l'affichage des statistiques utilisateurs
-        /*
-        $affichage .= "<p><strong>Nombre d'episodes vus :</strong> " . htmlspecialchars($this->profile['episodes_watched']) . "</p>";
-        $affichage .= "<p><strong>Taux de complétion du catalogue :</strong> " . htmlspecialchars($this->profile['completion_rate']) . "%</p>";
-        $affichage .= "<p><strong>Nombre de commentaires postés :</strong> " . htmlspecialchars($this->profile['comments_posted']) . "</p>";
-        $affichage .= "<a href='?action=SerieTerminees'>Voir les séries terminées</a><br>";
-        */
+        $affichage .= "<p><strong>Nombre d'episodes vus :</strong> " . $nbEpVus . "</p>";
+        $affichage .= "<p><strong>Taux de complétion du catalogue :</strong> " . $tauxCompletion . "%</p>";
+        $affichage .= "<p><strong>Nombre de commentaires postés :</strong> " . $nbComments . "</p>";
+        $affichage .= "<a href='?action=display-series-terminees'>Voir les séries terminées</a><br>";
         $affichage .= "<a href='?action=edit-profile'>Modifier le profil</a>";
         $affichage .= "</div>";
         return $affichage;
