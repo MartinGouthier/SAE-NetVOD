@@ -28,4 +28,5 @@ abstract class Action {
             $html = $this->GET();
         return $html;
     }
+
 }

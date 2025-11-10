@@ -1,6 +1,7 @@
 <?php
 namespace iutnc\netvod\action;
 
+use iutnc\netvod\render\Renderer;
 use iutnc\netvod\render\SerieRenderer;
 use iutnc\netvod\repository\NetvodRepository;
 
@@ -12,7 +13,7 @@ class DisplayCommentaires extends ActionConnecte {
         $serie = $repo->getSerieById($idSerie);
 
         $renderer = new SerieRenderer($serie);
-        return $renderer->render(SerieRenderer::COMMENTAIRES);
+        return $renderer->render(Renderer::COMMENTAIRES);
     }
     public function POST(): string {
         return $this->GET();

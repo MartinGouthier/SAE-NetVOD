@@ -57,7 +57,7 @@ class SerieRenderer implements Renderer {
         } elseif ($selecteur === Renderer::SERIERECENTE) {
             // image cliquable vers le prochain épisode ou la série
             $repo = NetvodRepository::getInstance();
-            $id_user = intval($repo->getUserInfo(AuthnProvider::getSignedInUser())["id"]);
+            $id_user = AuthnProvider::getSignedInUser()->__GET("id");
             $episode = $repo->getProchainEpisodeEnCours($id_user, $idSerie);
 
             if ($episode) {
@@ -193,5 +193,25 @@ class SerieRenderer implements Renderer {
         }
 
         return $html;
+    }
+
+    public static function displayHTMLgenres() : string {
+        $repo = NetvodRepository::getInstance();
+        $listeGenre = $repo->getGenres();
+        $htmlGenre = "<option value = >Aucun</option>";
+        foreach($listeGenre as $genre){
+            $htmlGenre .= "<option value='$genre'>$genre</option>";
+        }
+        return $htmlGenre;
+    }
+
+    public static function displayHTMLpublics() : string {
+        $repo = NetvodRepository::getInstance();
+        $listePublic = $repo->getPublics();
+        $htmlPublic = "<option value = >Aucun</option>";
+        foreach($listePublic as $public){
+            $htmlPublic .= "<option value='$public'>$public</option>";
+        }
+        return $htmlPublic;
     }
 }

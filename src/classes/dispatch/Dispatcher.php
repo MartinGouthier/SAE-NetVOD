@@ -74,7 +74,7 @@ class Dispatcher {
         $html = $a->execute();
         // Si un utilisateur est connecté, on l'affiche au dessus du contenu
         if (isset($_SESSION['user'])) {
-            $html = "<p>Connecté en tant que <strong>" . AuthnProvider::getSignedInUser() . "</strong></p>" . $html;
+            $html = "<p>Connecté en tant que <strong>" . AuthnProvider::getSignedInUser()->__GET("email") . "</strong></p>" . $html;
         }
 
         $this->renderPage($html);

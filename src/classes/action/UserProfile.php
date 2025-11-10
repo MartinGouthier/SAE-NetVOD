@@ -7,14 +7,11 @@ use iutnc\netvod\render\ProfileRenderer;
 class UserProfile extends ActionConnecte {
 
     public function GET(): string {
-        $pdo = NetvodRepository::getInstance();
-        $profile = $pdo->getUserInfo($_SESSION['user']);
-        var_dump($profile);
-        $renderer = new ProfileRenderer($profile);
+        $renderer = new ProfileRenderer($this->user);
         return $renderer->render();
     }
 
     public function POST(): string {
-        // Implementation of POST method for user profile
+        return $this->GET();
     }
 }

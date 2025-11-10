@@ -18,7 +18,7 @@ class EpisodeSerieRenderer implements Renderer {
         $affichage = "<div class='episode'>";
 
         $repo = NetvodRepository::getInstance();
-        $id_user = intval($repo->getUserInfo(AuthnProvider::getSignedInUser())["id"]);
+        $id_user = AuthnProvider::getSignedInUser()->__GET("id");
 
         // On ajoute le titre, éventuellement cliquable et avec indication "déjà vu"
         $affichage .= $this->renderTitre($selecteur, $id_user, $repo);

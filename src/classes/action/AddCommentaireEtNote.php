@@ -32,9 +32,8 @@ class AddCommentaireEtNote extends ActionConnecte {
         $commentaire = filter_var($_POST['commentaire'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
         $repo = NetvodRepository::getInstance();
-        $userId = $repo->getUSerInfo(AuthnProvider::getSignedInUser())[2];
+        $userId = $this->user->__GET("id");
 
-        $message = '';
 
         if ($repo->notePresente($userId, $serieId)) {
             $message = "<b>Erreur :</b> vous avez déjà noté cette série.";

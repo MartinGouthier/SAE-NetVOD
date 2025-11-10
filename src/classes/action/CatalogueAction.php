@@ -60,18 +60,9 @@ class CatalogueAction extends ActionConnecte {
 
     public function displayForm() : string {
 
-        $repo = NetvodRepository::getInstance();
-        $listeGenre = $repo->getGenres();
-        $listePublic = $repo->getPublics();
-        $htmlGenre = "<option value = >Aucun</option>";
-        $htmlPublic = "<option value = >Aucun</option>";
 
-        foreach($listeGenre as $genre){
-            $htmlGenre .= "<option value='$genre'>$genre</option>";
-        }
-        foreach($listePublic as $public){
-            $htmlPublic .= "<option value='$public'>$public</option>";
-        }
+        $htmlGenre = SerieRenderer::displayHTMLgenres();
+        $htmlPublic = SerieRenderer::displayHTMLpublics();
 
         return <<<HTML
         <h2>Catalogue des séries</h2>

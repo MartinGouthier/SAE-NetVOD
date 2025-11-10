@@ -2,6 +2,7 @@
 
 namespace iutnc\netvod\action;
 
+use iutnc\netvod\render\SerieRenderer;
 use iutnc\netvod\repository\NetvodRepository;
 
 class EditProfile extends ActionConnecte {
@@ -18,11 +19,8 @@ class EditProfile extends ActionConnecte {
         $html .= "<label for='birthday'>Date de naissance :</label><br>";
         $html .= "<input type='date' id='birthday' name='birthday'><br><br>";
         $html .= "<label for='favorite_genre'>Genre préféré :</label><br>";
-        $html .= "<select type='action' id='favorite_genre' name='favorite_genre' list='genres'>";
-        $html .= "<option value='Thriller'>Thriller</option>";
-        $html .= "<option value='Sport'>Sport</option>";
-        $html .= "<option value='Comédie'>Comédie</option>";
-        $html .= "<option value='Documentaire'>Documentaire</option>";
+        $html .= "<select id='favorite_genre' name='favorite_genre'>";
+        $html .= SerieRenderer::displayHTMLgenres();
         $html .= "</select><br><br>";
         $html .= "<input type='submit' value='Enregistrer les modifications'>";
         $html .= "</form>";
@@ -39,7 +37,7 @@ class EditProfile extends ActionConnecte {
 
         // Mise à jour des informations dans la base de données
         $repo = NetvodRepository::getInstance();
-        $repo->updateUserProfile($_SESSION['user'], $username, $first_name, $last_name, $birthday, $favorite_genre);
+        $repo->updateUserProfile($this->user->__GET('email'), $username, $first_name, $last_name, $birthday, $favorite_genre);
 
         return "<p>Profil mis à jour avec succès !</p><a href='?action=user-profile'>Retour au profil</a>";
     }

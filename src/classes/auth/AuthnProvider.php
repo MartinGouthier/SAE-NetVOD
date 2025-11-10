@@ -15,7 +15,9 @@ class AuthnProvider
         $hash = $tab[0];
         if (!$hash ||!password_verify($passwd2check, $hash))
             throw new AuthException("Auth error : invalid credentials");
-        $_SESSION['user'] = $email;
+
+        $user = new User($email,$tab["first_name"],$tab["username"],$tab["last_name"],$tab["birthday"],$tab["favorite_genre"],$tab["role"],$tab["id"]);
+        $_SESSION['user'] = serialize($user);
 
     }
 
@@ -39,10 +41,10 @@ class AuthnProvider
         return $token ;
     }       
 
-    public static function getSignedInUser( ): string {
+    public static function getSignedInUser(): User {
         if (!isset($_SESSION['user']))
             throw new AuthException("Auth error : not signed in");
-        return $_SESSION['user'];
+        return unserialize($_SESSION['user']);
     }
     
 
