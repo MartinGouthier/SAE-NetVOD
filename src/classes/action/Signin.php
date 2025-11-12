@@ -13,7 +13,6 @@ class Signin extends Action {
     public function POST(): string {
 
         // Si l'utilisateur demande la déconnexion via le bouton
-        //TODO Faire le signout
         if (isset($_POST['signout'])) {
             AuthnProvider::signout();
             return "<p>Déconnexion réussie.</p>";

@@ -35,13 +35,19 @@ class CatalogueAction extends ActionConnecte {
     public function POST(): string {
         $typeTri = intval($_POST['typeTri']);
         $typeFiltre = intval($_POST['typeFiltre']);
-        $filtre = $_POST["filtre$typeFiltre"];
+        if ($typeFiltre !== 0)
+            $filtre = $_POST["filtre$typeFiltre"];
+        else
+            $filtre = "";
 
         $pdo = NetvodRepository::getInstance();
-        $idSeries = $pdo->getSeries();
+        $tabSeries = $pdo->getSeries();
+        $idSeries = [];
+        foreach ($tabSeries as $serie){
+            $idSeries[] = $serie->__GET("id");
+        }
 
         $html = $this->displayForm();
-
 
         if ($typeTri !== self::AUCUNTRI)
             $idSeries = $pdo->getSeriesTriees($typeTri);

@@ -16,7 +16,7 @@ class AuthnProvider
         if (!$hash ||!password_verify($passwd2check, $hash))
             throw new AuthException("Auth error : invalid credentials");
 
-        $user = new User($email,$tab["first_name"],$tab["username"],$tab["last_name"],$tab["birthday"],$tab["favorite_genre"],$tab["role"],$tab["id"]);
+        $user = new User($email,$tab["role"],$tab["id"],$tab["first_name"],$tab["username"],$tab["last_name"],$tab["birthday"],$tab["favorite_genre"]);
         $_SESSION['user'] = serialize($user);
 
     }
