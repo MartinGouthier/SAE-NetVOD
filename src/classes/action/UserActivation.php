@@ -32,7 +32,7 @@ class UserActivation extends Action {
 
     public function POST(): String {
         
-        return $html = $this->GET();
+        return $this->GET();
 
     }
 }

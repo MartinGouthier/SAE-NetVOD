@@ -129,12 +129,13 @@ class NetvodRepository
         return $tab;
     }
     
-    public function getSerieById(int $idSerie) : Serie {
+    public function getSerieById(int $idSerie) : Serie|false {
         $requete = "SELECT * FROM serie WHERE id = ?;";
         $statm = $this->pdo->prepare($requete);
         $statm->execute([$idSerie]);
         $donnee = $statm->fetch();
-
+        if (!$donnee)
+            return false;
         $moyenneres = $this->getMoyenne($idSerie);
         $moyenne = null;
         if ((int)$moyenneres[1] > 0) {
@@ -182,11 +183,14 @@ class NetvodRepository
     }
 
 
-    public function getEpisodeById(int $idEpisode) : EpisodeSerie{
+    public function getEpisodeById(int $idEpisode) : EpisodeSerie|false{
         $requete = "SELECT * FROM episode WHERE id = ?";
         $statm = $this->pdo->prepare($requete);
         $statm->execute(["$idEpisode"]);
         $donnee = $statm->fetch();
+        if (!$donnee){
+            return false;
+        }
         return new EpisodeSerie($donnee[1],$donnee[2],$donnee[3],$donnee[4],$donnee[5],$donnee[0],$donnee[6]);
     }
 

@@ -10,10 +10,21 @@ class DisplayEpisode extends ActionConnecte {
 
 
     public function GET(): string {
+        $actionSecours = new CatalogueAction();
+        if (!isset($_GET["episode"]))
+            return $actionSecours->GET();
         $episodeId = $_GET['episode'];
+        if (!is_int($episodeId))
+            return $actionSecours->GET();
+        if (!filter_var($episodeId,FILTER_SANITIZE_NUMBER_INT))
+            return $actionSecours->GET();
+
 
         $repo = NetvodRepository::getInstance();
         $episode = $repo->getEpisodeById($episodeId);
+        if (!$episode){
+            return $actionSecours->GET();
+        }
         $_GET["id_serie"] = $episode->__get('id_serie');
         $_GET["episode"] = $episodeId;
 

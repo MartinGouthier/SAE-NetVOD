@@ -1,6 +1,7 @@
 <?php
 namespace iutnc\netvod\action;
 
+use iutnc\netvod\auth\AuthnProvider;
 use iutnc\netvod\repository\NetvodRepository;
 
 class UserProfile extends ActionConnecte {

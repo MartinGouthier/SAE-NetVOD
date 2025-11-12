@@ -59,7 +59,7 @@ class ResetPassWord extends Action {
         }
 
         // Récupération du token depuis l’URL
-        $token = htmlspecialchars($_GET['token'] ?? '', ENT_QUOTES);
+        $token = $_GET['token'] ?? '';
 
         // Si aucun token, on affiche une erreur
         if (empty($token)) {
