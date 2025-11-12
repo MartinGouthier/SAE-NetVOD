@@ -231,10 +231,13 @@ class NetvodRepository
                      INNER JOIN episode ON episode.serie_id = serie.id 
                      LEFT JOIN notation ON notation.id_serie = serie.id
                      GROUP BY serie.id
-                     ORDER BY $tri;
+                     ORDER BY $tri
     SQL;
-        if ($tri === "nbr" || $tri === "moyenne")
-            $requete .= " DESC";
+        echo ($tri);
+        if ($tri === "nbr" || $tri === "moyenne") {
+            echo($tri);
+            $requete .= " DESC;";
+        }
         $statm = $this->pdo->query($requete);
         $tab = [];
         while ($donnee = $statm->fetch()){

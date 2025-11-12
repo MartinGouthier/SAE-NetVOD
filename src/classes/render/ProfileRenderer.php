@@ -35,7 +35,6 @@ class ProfileRenderer implements Renderer {
         $affichage .= "<p><strong>Nom :</strong> " . htmlspecialchars($this->profile->__GET("nom")) . "</p>";
         $affichage .= "<p><strong>Date de naissance :</strong> " . htmlspecialchars($this->profile->__GET("birthday")) . "</p>";
         $affichage .= "<p><strong>Genre préféré :</strong> " . htmlspecialchars($this->profile->__GET("genreFav")) . "</p>";
-        //TODO Finir l'affichage des statistiques utilisateurs
         $affichage .= "<p><strong>Nombre d'episodes vus :</strong> " . $nbEpVus . "</p>";
         $affichage .= "<p><strong>Taux de complétion du catalogue :</strong> " . $tauxCompletion . "%</p>";
         $affichage .= "<p><strong>Nombre de commentaires postés :</strong> " . $nbComments . "</p>";
