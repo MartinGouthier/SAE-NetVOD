@@ -81,7 +81,18 @@ class Dispatcher {
         $this->renderPage($html);
     }
 
-    private function renderPage(string $html): void {
+     private function renderPage(string $html): void {
+        $Profil = '';
+        if (isset($_SESSION['user'])){
+            $Profil = '<a href="?action=user-profile">Profil utilisateur</a>' ;
+        } else {
+
+            $Profil = '<a href="?action=sign-in">Connexion</a>
+                        <a href="?action=add-user">Inscription</a>' ;
+        }
+      
+
+        
         $pageComplete = <<<END
             <!DOCTYPE html>
             <html lang="fr">
@@ -94,23 +105,21 @@ class Dispatcher {
                 <body>
                     <h1 id="logo"><img src="image\\fishing-net.png" alt="Logo NetVod">VOD</h1>
                     <p>Application de visionnage de séries</p>
-                    <hr>
+
             
                     <p>
-                        <a href="?action=sign-in">Connexion</a> |
-                        <a href="?action=add-user">Inscription</a> |
-                        <a href="?action=user-profile">Profil utilisateur</a>
+                        
+                        $Profil 
+                        
                     </p>
             
                     <hr>
             
-                    <h2>Menu principal</h2>
                     <ul>
                         <li><a href="?action=default">Accueil</a></li>
                         <li><a href="?action=catalogue">Catalogue</a></li>
                     </ul>
             
-                    <hr>
             
                     <div>
                         $html

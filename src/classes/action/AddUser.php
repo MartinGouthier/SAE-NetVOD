@@ -64,6 +64,7 @@ class AddUser extends Action {
             <input type="password" id="RePassword" name="rePassword" required><br><br>
           
             <button type="submit">S'inscrire</button>
+
         </form>
         HTML;
     }

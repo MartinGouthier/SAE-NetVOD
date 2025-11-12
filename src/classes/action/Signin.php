@@ -67,6 +67,8 @@ class Signin extends Action {
             <br><br>
             <button type="submit">Connexion</button>
             <br><br><a href="?action=password-perdu">Mot de passe oublié ?</a>
+            
+
         </form>
         <script>
         document.getElementById("togglePassword").addEventListener("click", function() {
