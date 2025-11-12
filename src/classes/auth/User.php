@@ -6,20 +6,21 @@ use Exception;
 
 class User
 {
-    private ?string $email, $username, $prenom, $nom, $birthday, $genreFav;
+    private string $email;
+    private ?string $username, $prenom, $nom, $birthday, $genreFav;
     private int $role, $id;
 
     /**
      * @param string $email
-     * @param string $prenom
-     * @param string $username
-     * @param string $nom
-     * @param string $birthday
-     * @param string $genreFav
      * @param int $role
      * @param int $id
+     * @param string|null $prenom
+     * @param string|null $username
+     * @param string|null $nom
+     * @param string|null $birthday
+     * @param string|null $genreFav
      */
-    public function __construct(string $email, ?string $prenom = null, ?string $username = null, ?string $nom = null, ?string $birthday = null, ?string $genreFav = null, int $role, int $id)
+    public function __construct(string $email, int $role, int $id, ?string $prenom = null, ?string $username = null, ?string $nom = null, ?string $birthday = null, ?string $genreFav = null)
     {
         $this->email = $email;
         $this->prenom = $prenom;

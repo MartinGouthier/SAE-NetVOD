@@ -2,6 +2,8 @@
 
 namespace iutnc\netvod\action;
 
+use iutnc\netvod\auth\AuthnProvider;
+use iutnc\netvod\auth\User;
 use iutnc\netvod\render\SerieRenderer;
 use iutnc\netvod\repository\NetvodRepository;
 
@@ -38,7 +40,9 @@ class EditProfile extends ActionConnecte {
         // Mise à jour des informations dans la base de données
         $repo = NetvodRepository::getInstance();
         $repo->updateUserProfile($this->user->__GET('email'), $username, $first_name, $last_name, $birthday, $favorite_genre);
-
+        $curUser = AuthnProvider::getSignedInUser();
+        $user = new User($curUser->__GET("email"),$curUser->__GET("role"),$curUser->__GET("id"),$first_name,$username,$last_name,$birthday,$favorite_genre);
+        $_SESSION['user'] = serialize($user);
         return "<p>Profil mis à jour avec succès !</p><a href='?action=user-profile'>Retour au profil</a>";
     }
 }
