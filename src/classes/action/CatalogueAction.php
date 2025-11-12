@@ -24,11 +24,14 @@ class CatalogueAction extends ActionConnecte {
         $tab = $pdo->getSeries();
 
         $html = $this->displayForm();
+        
+          $html .= "<div class='series'>";
         foreach ($tab as $s) {
             $renderer = new SerieRenderer($s);
             $html.= $renderer->render(Renderer::COMPACT);
         }
         
+        $html .= "</div>";
         return $html;
     }
 
@@ -55,11 +58,13 @@ class CatalogueAction extends ActionConnecte {
         if (filter_var($filtre, FILTER_SANITIZE_SPECIAL_CHARS)){
             $idSeries = $pdo->getSeriesFiltrees($idSeries, $typeFiltre, $filtre);
         }
+        $html .= "<div class='series'>";
         foreach ($idSeries as $s) {
             $serie = $pdo->getSerieById($s);
             $renderer = new SerieRenderer($serie);
             $html .= $renderer->render(Renderer::COMPACT);
         }
+        $html .= "</div>";
         return $html;
 
     }

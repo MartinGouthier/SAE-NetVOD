@@ -42,8 +42,8 @@ class SerieRenderer implements Renderer {
 
     // Titre et année de la série
     private function renderHeader(): string {
-        return "<h2>" . htmlspecialchars($this->serie->__get("title")) .
-            " (" . $this->serie->__get("annee") . ")</h2>";
+        return "<h3>" . htmlspecialchars($this->serie->__get("title")) .
+            " (" . $this->serie->__get("annee") . ")</h3>";
     }
 
     // Image de la série et lien selon le mode choisi

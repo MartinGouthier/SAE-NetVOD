@@ -11,7 +11,7 @@ class UserProfile extends ActionConnecte {
         $tauxCompletion = floor($nbEpVus / $repo->getTotalEpisodes() * 100);
         $nbComments = $repo->getNbCommentairesPostes($this->user->__GET("id"));
         $html =  <<<HTML
-                    <div class='profile'>
+                    <div class='userprofile'>
                     <h2>Profil de l'utilisateur</h2>
                     <p><strong>Nom d'utilisateur : </strong>{$this->user->__GET("username")} </p>
                     <p><strong>Email : </strong>{$this->user->__GET("email")}</p>

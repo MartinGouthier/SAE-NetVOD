@@ -44,13 +44,13 @@ class EpisodeSerieRenderer implements Renderer {
             // En mode COMPACT, le titre est cliquable et indique si l'épisode a déjà été vu
             $dejavu = $repo->estEpisodeVisionne($id_user, $this->episode->__get("id")) ? " (déjà vu)" : "";
             return "<a href='?action=display-episode&episode={$this->episode->__get("id")}.'>
-                        <h3>Épisode " . $this->episode->__get("numero") . " : " .
-                htmlspecialchars($this->episode->__get("titre")) . "$dejavu</h3>
+                        <h2>Épisode " . $this->episode->__get("numero") . " : " .
+                htmlspecialchars($this->episode->__get("titre")) . "$dejavu</h2>
                     </a>";
         } else {
             // Sinon, on affiche juste le titre sans lien
-            return "<h3>Épisode " . $this->episode->__get("numero") . " : " .
-                htmlspecialchars($this->episode->__get("titre")) . "</h3>";
+            return "<h2>Épisode " . $this->episode->__get("numero") . " : " .
+                htmlspecialchars($this->episode->__get("titre")) . "</h2>";
         }
     }
 
