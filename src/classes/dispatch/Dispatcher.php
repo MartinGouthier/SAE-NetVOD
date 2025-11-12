@@ -81,18 +81,20 @@ class Dispatcher {
         $this->renderPage($html);
     }
 
-     private function renderPage(string $html): void {
+        private function renderPage(string $html): void {
         $Profil = '';
         if (isset($_SESSION['user'])){
-            $Profil = '<a href="?action=user-profile">Profil utilisateur</a>' ;
+            $Profil = '<a href="?action=user-profile">Profil utilisateur</a>
+                <form id="signout-form" method="post" action="?action=sign-in" style="display:inline">
+                <input type="hidden" name="signout" value="1">
+                </form>
+                <a href="#" onclick="document.getElementById(\'signout-form\').submit(); return false;">Se Déconnecter</a>' ;
         } else {
 
             $Profil = '<a href="?action=sign-in">Connexion</a>
                         <a href="?action=add-user">Inscription</a>' ;
         }
-      
 
-        
         $pageComplete = <<<END
             <!DOCTYPE html>
             <html lang="fr">
@@ -101,26 +103,23 @@ class Dispatcher {
                     <title>NetVod - Visionnage de séries en ligne</title>
                     <link rel="stylesheet" href="style.css">
                 </head>
-            
+
                 <body>
-                    <h1 id="logo"><img src="image\\fishing-net.png" alt="Logo NetVod">VOD</h1>
+                    
+                        <h1 id="logo"><img src="image\\fishing-net.png" alt="Logo NetVod">VOD</h1>
+                        <div class="profile">
+                            $Profil
+                        </div>
+                   
                     <p>Application de visionnage de séries</p>
 
-            
-                    <p>
-                        
-                        $Profil 
-                        
-                    </p>
-            
                     <hr>
-            
+
                     <ul>
                         <li><a href="?action=default">Accueil</a></li>
                         <li><a href="?action=catalogue">Catalogue</a></li>
                     </ul>
-            
-            
+
                     <div>
                         $html
                     </div>
@@ -130,5 +129,4 @@ class Dispatcher {
 
         echo $pageComplete;
     }
-
 }

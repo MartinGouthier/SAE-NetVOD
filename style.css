@@ -45,6 +45,7 @@ p {
 }
 
 a {
+    text-align: center;
     color : var(--main-color);
 }
 
@@ -56,7 +57,7 @@ hr {
     margin: 1.5rem 0;
 }
 
-/* ---------- Menu principal ---------- */
+
 h2 {
     color: var(--main-color);
     padding-left: 0.5rem;
@@ -119,24 +120,44 @@ a[id*="Seconnecter"] {
     transition: background-color 0.2s ease, transform 0.15s ease;
 }
 
-a[id*="Seconnecter"]:hover {
 
-    transform: translateY(-2px);
+.topbar {
+    position: relative;
+    padding: 0.6rem 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center; /* logo centered by default */
 }
 
-/* ---------- Responsivité ---------- */
-@media (max-width: 600px) {
-    body {
-        padding: 0.5rem;
-    }
-
-    ul {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    ul li {
-        width: 90%;
-        text-align: center;
-    }
+.profile {
+    position: absolute;
+    top: 0.6rem;
+    right: 1rem;
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    z-index: 10;
 }
+
+/* style boutons/links du profil */
+.profile a {
+    display: inline-block;
+    padding: 0.35rem 0.7rem;
+    border-radius: 6px;
+    text-decoration: none;
+    background-color: transparent;
+    color: var(--main-color);
+    font-weight: 500;
+}
+
+    
+
+/* masquer le form inline (on soumet via le lien JS) */
+.profile form {
+    display: inline;
+    margin: 0;
+}
+
+
+
+
