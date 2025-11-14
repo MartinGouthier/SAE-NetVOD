@@ -10,9 +10,7 @@ class DisplayCommentaires extends ActionConnecte {
         $actionSecours = new CatalogueAction();
         if (!isset($_GET['id_serie']))
             return $actionSecours->GET();
-        $idSerie = $_GET['id_serie'];
-        if (!is_int($idSerie))
-            return $actionSecours->GET();
+        $idSerie = (int) $_GET['id_serie'];
         if (!filter_var($idSerie,FILTER_SANITIZE_NUMBER_INT))
             return $actionSecours->GET();
         $repo = NetvodRepository::getInstance();
