@@ -42,8 +42,8 @@ class SerieRenderer implements Renderer {
 
     // Titre et année de la série
     private function renderHeader(): string {
-        return "<h3>" . htmlspecialchars($this->serie->__get("title")) .
-            " (" . $this->serie->__get("annee") . ")</h3>";
+        return "<h2>" . htmlspecialchars($this->serie->__get("title")) .
+            " (" . $this->serie->__get("annee") . ")</h2>";
     }
 
     // Image de la série et lien selon le mode choisi
@@ -164,7 +164,7 @@ class SerieRenderer implements Renderer {
 
     // Affiche uniquement les commentaires
     private function renderCommentaires(): string {
-        $html = "<h2>Commentaires</h2>";
+        $html = "<h3>Commentaires</h3>";
         $comments = $this->serie->__get("commentaires");
 
         if (!empty($comments)) {
@@ -175,7 +175,7 @@ class SerieRenderer implements Renderer {
                 $commentaire = htmlspecialchars($c['commentaire']);
 
                 $html .= <<<HTML
-                    <div class="commentaire">
+                    <div id="commentaire" class="commentaire">
                         <div class="comment-header">
                             <strong>{$email}</strong>
                             <span class="note">Note : {$note}/5</span>

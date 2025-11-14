@@ -9,6 +9,7 @@
     --border-color: #ddd;
     --radius: 8px;
     --C1element: #352f23 ;
+    --C2element: #615439 ;
     --transition: 0.2s ease;
 }
 
@@ -98,7 +99,7 @@ ul li a {
     font-weight: 500;
 }
 
-/* ---------- Contenu dynamique ---------- */
+
 div {
     background: var(--C1element);
     border-radius: var(--radius);
@@ -111,6 +112,14 @@ div {
 label {
     color: var(--main-color);
 
+}
+
+div[id="commentaire"] {
+    background: var(--C2element);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 0.8rem;
+    margin: 0.5rem 0;
 }
 
 a[id*="Seconnecter"] {
