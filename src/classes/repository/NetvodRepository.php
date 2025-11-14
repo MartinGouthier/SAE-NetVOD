@@ -63,7 +63,7 @@ class NetvodRepository
         $requete = "INSERT INTO user (email, passwd, role, token, token_expire) values (?, ?, 0, ?, ?);";
        
         $token = bin2hex(random_bytes(12));
-        $expire = date('Y-m-d H:i:s', time() + 3600); // expire dans 1h
+        $expire = date('Y-m-d H:i:s', time() + 30); // expire dans 30 secondes
 
         $statm = $this->pdo->prepare($requete);
         $statm->bindParam(1, $email);
@@ -110,7 +110,7 @@ class NetvodRepository
    
 
     public function verifieEmailExiste(string $email) : bool {
-        $requete = "SELECT count(*) FROM user WHERE email = ?;";
+        $requete = "SELECT count(*) FROM user WHERE email = ? AND role = 1;";
         $statm = $this->pdo->prepare($requete);
         $statm->bindParam(1, $email);
         $statm->execute();
@@ -539,4 +539,12 @@ class NetvodRepository
         $statm->execute([$id_user]);
         return $statm->fetch()[0];
     }
+
+    public function estActivationPossible(string $token) : bool{
+        $requete = "SELECT count(*) FROM user WHERE token = ? AND token_expire > NOW()";
+        $statm = $this->pdo->prepare($requete);
+        $statm->execute([$token]);
+        $activation =(int) $statm->fetch()[0];
+        return ($activation === 1);
+}
 }

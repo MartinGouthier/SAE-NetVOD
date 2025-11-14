@@ -35,7 +35,7 @@ class AddUser extends Action {
         
         $activationUrl = "?action=user-act&token=" . urlencode($token);
         
-        $html = "<p>Voici votre lien d'activation :</p><p><a href='$activationUrl'>$activationUrl</a></p>";
+        $html = "<p>Voici votre lien d'activation :</p><p><a href='$activationUrl'>$activationUrl</a> <b>(Valable pour 30 secondes)</b></p>";
     
             
         } catch (AuthException $e) {

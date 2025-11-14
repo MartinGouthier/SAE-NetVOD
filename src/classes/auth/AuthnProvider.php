@@ -11,11 +11,13 @@ class AuthnProvider
         $bdd = NetvodRepository::getInstance();
         $tab = $bdd->getUserInfo($email);
         if (!$tab)
-            throw new AuthException("Auth error : invalid credentials");
+            throw new AuthException("<p>Identifiant ou mot de passe invalide</p>");
         $hash = $tab[0];
         if (!$hash ||!password_verify($passwd2check, $hash))
-            throw new AuthException("Auth error : invalid credentials");
-
+            throw new AuthException("<p>Identifiant ou mot de passe invalide</p>");
+        echo ($tab["role"]);
+        if ($tab["role"] == 0)
+            throw new AuthException("<p>Compte non activé, veuillez utiliser le lien fourni lors de l'activation</p>");
         $user = new User($email,$tab["role"],$tab["id"],$tab["first_name"],$tab["username"],$tab["last_name"],$tab["birthday"],$tab["favorite_genre"]);
         $_SESSION['user'] = serialize($user);
 

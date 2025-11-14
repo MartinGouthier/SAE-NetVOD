@@ -19,7 +19,10 @@ class UserActivation extends Action {
         $token = $_GET['token'];
     
         $repo = NetvodRepository::getInstance();
-        $repo->activationCompte($token);  
+        if ($repo->estActivationPossible($token))
+            $repo->activationCompte($token);
+        else
+            return "<p>Votre token a expiré ou est incorrecte, veuillez recréer un compte</p>";
 
         } catch (TokenException $e) {
 
