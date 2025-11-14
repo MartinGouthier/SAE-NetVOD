@@ -111,7 +111,7 @@ class SerieRenderer implements Renderer {
             "<p><strong>Description :</strong> {$desc}</p>".
             "<p><strong>Commentaires :</strong> {$nbCommentairesTexte}</p>";
 
-        $lienCommentaires = "<p><a href='?action=display-commentaires&id_serie={$idSerie}'>Voir tous les commentaires</a></p>";
+        $lienCommentaires = "<p><strong><a id='titre' href='?action=display-commentaires&id_serie={$idSerie}'>Voir tous les commentaires</a></strong></p>";
 
         return $infosHtml . $lienCommentaires;
     }
@@ -151,7 +151,7 @@ class SerieRenderer implements Renderer {
 
         if (!empty($episodes)) {
             // titre de la section épisodes
-            $affichage .= "<h3>Épisodes</h3>";
+           
             // on utilise EpisodeSerieRenderer pour chaque épisode
             foreach ($episodes as $episode) {
                 $renderer = new EpisodeSerieRenderer($episode);
