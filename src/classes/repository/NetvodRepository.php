@@ -46,6 +46,11 @@ class NetvodRepository
 
     }
 
+    /**
+     * Renvoie les informations d'un utilisateur ou false
+     * @param string $email
+     * @return array|false
+     */
     public function getUserInfo(string $email) : array | false
     {
         $requete = "SELECT passwd, username, first_name, last_name, birthday, favorite_genre, role, id FROM user WHERE email = ?;";
@@ -54,6 +59,14 @@ class NetvodRepository
         $statm->execute();
         return $statm->fetch();
     }
+
+    /**
+     * Ajoute un nouvel utilisateur à la BDD et supprime les comptes expirés
+     * @param string $email
+     * @param string $passwd
+     * @return string
+     * @throws \Random\RandomException
+     */
     public function registerNewUser(string $email, string $passwd) : string {
         // supprime les comptes utilisateurs non activés avec un token expiré 
         $requete = "DELETE FROM user WHERE token_expire IS NOT NULL AND token_expire < NOW() AND role != 1;";
@@ -75,6 +88,12 @@ class NetvodRepository
         return $token;
     }
 
+    /**
+     * Active un compte à partir du token
+     * @param string $token
+     * @return void
+     * @throws TokenException
+     */
     public function activationCompte(string $token): void {
        
         $stmt = "SELECT * FROM user WHERE token = ? ";
@@ -107,8 +126,13 @@ class NetvodRepository
     }
 
     // Methode pour verifié si il y a un token et que le compte est déjà activé
-   
 
+
+    /**
+     * Verifie si un compte activé existe dans la BDD
+     * @param string $email
+     * @return bool
+     */
     public function verifieEmailExiste(string $email) : bool {
         $requete = "SELECT count(*) FROM user WHERE email = ? AND role = 1;";
         $statm = $this->pdo->prepare($requete);
@@ -118,6 +142,10 @@ class NetvodRepository
         return ((int)$nbr !== 0);
     }
 
+    /**
+     * Retourne toutes les séries de la BDD
+     * @return array
+     */
     public function getSeries() : array {
         $requete = "SELECT id FROM serie;";
         $tab = [];
@@ -128,7 +156,12 @@ class NetvodRepository
         }
         return $tab;
     }
-    
+
+    /**
+     * Retourne une série à partir de son identifiant
+     * @param int $idSerie
+     * @return Serie|false
+     */
     public function getSerieById(int $idSerie) : Serie|false {
         $requete = "SELECT * FROM serie WHERE id = ?;";
         $statm = $this->pdo->prepare($requete);
@@ -143,6 +176,12 @@ class NetvodRepository
         }
         return new Serie($donnee[1],$donnee[2],$donnee[3],$donnee[4],$donnee[5],$donnee[6],$donnee[7],$donnee[0], $moyenne);
     }
+
+    /**
+     * Retourne les épisodes d'une serie
+     * @param int $idSerie
+     * @return array
+     */
     public function getEpisodesBySerie(int $idSerie): array {
         $requete = "SELECT * FROM episode WHERE serie_id = ? ORDER BY numero ASC;";
         $statm = $this->pdo->prepare($requete);
@@ -164,6 +203,11 @@ class NetvodRepository
         return $episodes;
     }
 
+    /**
+     * Retourne les commentaires d'une série
+     * @param int $idSerie
+     * @return array
+     */
     public function getCommentairesBySerie(int $idSerie): array {
         $requete = "
                     SELECT user.email, notation.note, notation.commentaire
@@ -183,6 +227,11 @@ class NetvodRepository
     }
 
 
+    /**
+     * Retourne un épisode à partir de son identifiant
+     * @param int $idEpisode
+     * @return EpisodeSerie|false
+     */
     public function getEpisodeById(int $idEpisode) : EpisodeSerie|false{
         $requete = "SELECT * FROM episode WHERE id = ?";
         $statm = $this->pdo->prepare($requete);
@@ -194,6 +243,12 @@ class NetvodRepository
         return new EpisodeSerie($donnee[1],$donnee[2],$donnee[3],$donnee[4],$donnee[5],$donnee[0],$donnee[6]);
     }
 
+    /**
+     * Verifie si une note a déja été attribué par un utilisateur
+     * @param int $id_user
+     * @param int $id_serie
+     * @return bool
+     */
     public function notePresente(int $id_user, int $id_serie) : bool{
         $requete = "SELECT count(*) FROM notation WHERE id_serie = ? AND id_user = ?";
         $statm = $this->pdo->prepare($requete);
@@ -202,6 +257,14 @@ class NetvodRepository
         return ($n === 1);
     }
 
+    /**
+     * Ajoute une note et un commentaire à une série
+     * @param int $id_user
+     * @param int $id_serie
+     * @param int $note
+     * @param string $commentaire
+     * @return void
+     */
     public function ajouterNoteEtCommentaire(int $id_user, int $id_serie, int $note, string $commentaire): void
     {
         $requete = "INSERT INTO notation VALUES (?,?,?,?);";
@@ -209,19 +272,12 @@ class NetvodRepository
         $statm->execute([$id_serie,$id_user,$note,$commentaire]);
     }
 
-    public function getMoyennesSeries() : array {
-        $requete = "SELECT id_serie, avg(note) FROM notation GROUP BY id_serie ORDER BY avg(note) DESC;";
-        $statm = $this->pdo->prepare($requete);
-        $tab = [];
-        $statm->execute();
-        while ($donnee = $statm->fetch()){
-            $tab[] = $donnee;
-        }
-        // Resultat sous forme [[MeilleurNote,id_serie],[2emeNote, id_serie]...]
-        return $tab;
-    }
 
-
+    /**
+     * Renvoie une liste d'identifiant de série trié par rapport au paramètre
+     * @param int $typeTri
+     * @return array
+     */
     public function getSeriesTriees(int $typeTri) : array {
         $tri = match($typeTri){
             CatalogueAction::TRITITRE => "serie.titre",
@@ -251,6 +307,13 @@ class NetvodRepository
         return $tab;
     }
 
+    /**
+     * Filtre la liste passé en paramètre
+     * @param array $idSeries
+     * @param int $typeFiltre
+     * @param string $filtre
+     * @return array
+     */
     public function getSeriesFiltrees(array $idSeries, int $typeFiltre, string $filtre = "") : array{
         $typeFiltre = match($typeFiltre){
             CatalogueAction::FILTREMOTCLE => "motcle",
@@ -281,6 +344,16 @@ class NetvodRepository
         return $tab;
     }
 
+    /**
+     * Met à jour le compte d'un utilisateur
+     * @param string $email
+     * @param string $username
+     * @param string $first_name
+     * @param string $last_name
+     * @param string $birthday
+     * @param string $genre
+     * @return void
+     */
     public function updateUserProfile(string $email, string $username, string $first_name, string $last_name, string $birthday, string $genre): void {
         if($username != '') {
             $requete = "UPDATE user SET username = ? WHERE email = ?;";
@@ -309,6 +382,12 @@ class NetvodRepository
             $statm->execute([$genre, $email]);
         }
     }
+
+    /**
+     * @param $email
+     * @return String
+     * @throws \Random\RandomException
+     */
     public function registerpassWordToken($email): String{
         // supprime les token expiré 
        $requete = "UPDATE user 
@@ -365,6 +444,11 @@ class NetvodRepository
         $stmt->execute();
     }
 
+    /**
+     * Renvoie la liste des séries préférés d'un utilisateur
+     * @param int $id_user
+     * @return array
+     */
     public function getSeriesPref(int $id_user) : array{
         $requete = "SELECT id_serie FROM seriepreferees WHERE id_user = ?;";
         $statm = $this->pdo->prepare($requete);
@@ -376,6 +460,12 @@ class NetvodRepository
         return $tab;
     }
 
+    /**
+     * Ajoute une série préféré à l'utilisateur
+     * @param int $id_serie
+     * @param int $id_user
+     * @return void
+     */
     public function addSeriePref(int $id_serie, int $id_user) : void{
         try {
             $requete = "INSERT INTO seriepreferees VALUES (?,?);";
@@ -384,6 +474,12 @@ class NetvodRepository
         } catch (\PDOException){}
     }
 
+    /**
+     * Retire une série préférée à l'utilisateur
+     * @param int $id_serie
+     * @param int $id_user
+     * @return void
+     */
     public function retirerSeriePref(int $id_serie, int $id_user): void
     {
         $requete = "DELETE FROM seriepreferees WHERE id_serie = ? AND id_user = ?;";
@@ -392,7 +488,13 @@ class NetvodRepository
     }
 
 
-    public function updateSerieEnCours(int $id_serie, int $id_user): void {
+    /**
+     * Met à jour l'état de visionnage d'une série par un utilisateur
+     * @param int $id_serie
+     * @param int $id_user
+     * @return void
+     */
+    private function updateSerieEnCours(int $id_serie, int $id_user): void {
         $requete = "SELECT COUNT(*) FROM serieEnCours WHERE id_serie = ? AND id_user = ?;";
         $statm = $this->pdo->prepare($requete);
         $statm->execute([$id_serie, $id_user]);
@@ -428,6 +530,13 @@ class NetvodRepository
         }
     }
 
+    /**
+     * Met à jour l'état de visionnage d'un épisode par un utilisateur
+     * @param int $id_user
+     * @param int $id_episode
+     * @return void
+     * @throws \Exception
+     */
     public function updateEpisodeVisionne(int $id_user, int $id_episode) : void
     {
         $requete = "SELECT count(*) FROM episodevisionne WHERE id_user = ? AND id_episode = ?;";
@@ -443,6 +552,11 @@ class NetvodRepository
         }
     }
 
+    /**
+     * Récupère les séries en cours de l'utilisateur
+     * @param int $id_user
+     * @return array
+     */
     public function getSeriesEnCours(int $id_user): array {
         $requete = "SELECT id_serie, etatVisionnage FROM serieEnCours WHERE id_user = ?;";
         $statm = $this->pdo->prepare($requete);
@@ -457,6 +571,11 @@ class NetvodRepository
         return $tab;
     }
 
+    /**
+     * Récupère la liste des séries terminées d'un utilisateur
+     * @param int $id_user
+     * @return array
+     */
     public function getSeriesTerminees(int $id_user) : array{
         $requete = "SELECT id_serie FROM serieencours WHERE etatVisionnage = 1 AND id_user = ?;";
         $statm = $this->pdo->prepare($requete);
@@ -468,6 +587,11 @@ class NetvodRepository
         return $tab;
     }
 
+    /**
+     * Récupère la moyenne des notes d'une série
+     * @param int $id_serie
+     * @return array
+     */
     public function getMoyenne(int $id_serie) : array{
         $requete = "SELECT round(avg(note),2), count(note) FROM notation WHERE id_serie = ?;";
         $statm = $this->pdo->prepare($requete);
@@ -475,6 +599,12 @@ class NetvodRepository
         return $statm->fetch();
     }
 
+    /**
+     * Récupère l'épisode suivant ou false s'il n'existe pas
+     * @param int $id_user
+     * @param int $id_serie
+     * @return EpisodeSerie|false
+     */
     public function getProchainEpisodeEnCours(int $id_user, int $id_serie) : EpisodeSerie|false {
         $requete = <<<SQL
                     SELECT max(numero) FROM episodevisionne
@@ -493,6 +623,13 @@ class NetvodRepository
         return $this->getEpisodeById(intval($res[0]));
     }
 
+    /**
+     * Vérifie si l'épisode est visionné par un utilisateur
+     * @param int $id_user
+     * @param int $id_episode
+     * @return bool
+     */
+
     public function estEpisodeVisionne(int $id_user, int $id_episode) : bool {
         $requete = "SELECT count(*) FROM episodevisionne WHERE id_user = ? AND id_episode = ?;";
         $statm = $this->pdo->prepare($requete);
@@ -500,6 +637,10 @@ class NetvodRepository
         return (intval($statm->fetch()[0] === 1));
     }
 
+    /**
+     * Récupère la liste des genres dans la BDD
+     * @return array
+     */
     public function getGenres() : array {
         $requete = "SELECT distinct genre FROM serie;";
         $statm = $this->pdo->query($requete);
@@ -510,6 +651,10 @@ class NetvodRepository
         return $tab;
     }
 
+    /**
+     * Récupère la liste des publics dans la BDD
+     * @return array
+     */
     public function getPublics() : array {
         $requete = "SELECT distinct typePublic FROM serie;";
         $statm = $this->pdo->query($requete);
@@ -520,26 +665,47 @@ class NetvodRepository
         return $tab;
     }
 
-    public function getNbEpisodesVus(int $id_user) {
+    /**
+     * Récupère le nombre d'épisodes vu par un utilisateur
+     * @param int $id_user
+     * @return string
+     */
+    public function getNbEpisodesVus(int $id_user): string
+    {
         $requete = "SELECT count(*) FROM episodevisionne WHERE id_user = ?;";
         $statm = $this->pdo->prepare($requete);
         $statm->execute([$id_user]);
         return $statm->fetch()[0];
     }
 
-    public function getTotalEpisodes() {
+    /**
+     * Récupère le nombre d'épisodes total
+     * @return string
+     */
+    public function getTotalEpisodes(): string
+    {
         $requete = "SELECT count(*) FROM episode;";
         $statm = $this->pdo->query($requete);
         return $statm->fetch()[0];
     }
 
-    public function getNbCommentairesPostes(int $id_user) {
+    /**
+     * Récupère le nombre de commentaires postés par un utilisateur
+     * @param int $id_user
+     * @return mixed
+     */
+    public function getNbCommentairesPostes(int $id_user) :string {
         $requete = "SELECT count(*) FROM notation WHERE id_user = ?;";
         $statm = $this->pdo->prepare($requete);
         $statm->execute([$id_user]);
         return $statm->fetch()[0];
     }
 
+    /**
+     * Vérifie si le compte peut être activé
+     * @param string $token
+     * @return bool
+     */
     public function estActivationPossible(string $token) : bool{
         $requete = "SELECT count(*) FROM user WHERE token = ? AND token_expire > NOW()";
         $statm = $this->pdo->prepare($requete);
